@@ -3,8 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env --max_old_space_size=4096 vite",
-    "serve": "cross-env --max_old_space_size=4096 vite",
+    "serve": "cross-env NODE_ENV=development --max_old_space_size=4096 vite",
     "build": "cross-env vite build",
     "preview": "vite preview",
     "preview:build": "npm run build && vite preview",

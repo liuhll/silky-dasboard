@@ -7,12 +7,13 @@ const regExps = (value: string, reg: string): string => {
 };
 
 export function createProxy(list: ProxyList = []) {
+
   const ret: any = {};
   for (const [prefix, target] of list) {
     ret[prefix] = {
       target: target,
-      changeOrigin: true,
-      rewrite: (path: string) => regExps(path, prefix)
+      changeOrigin: true
+//      rewrite: (path: string) => regExps(path, prefix)
     };
   }
   return ret;

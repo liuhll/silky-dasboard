@@ -6,6 +6,8 @@ export interface ViteEnv {
   VITE_USE_MOCK: boolean;
   VITE_PUBLIC_PATH: string;
   VITE_PROXY: [string, string][];
+  VUE_APP_BASE_API: string;
+
 }
 
 export function loadEnv(): ViteEnv {
@@ -33,6 +35,9 @@ export function loadEnv(): ViteEnv {
         realName = JSON.parse(realName);
         // eslint-disable-next-line no-empty
       } catch (error) {}
+    }
+    if (envName === "VUE_APP_BASE_API"){
+      realName = String(realName)
     }
     ret[envName] = realName;
     process.env[envName] = realName;

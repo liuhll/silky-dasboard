@@ -20,7 +20,6 @@ const alias: Record<string, string> = {
 };
 
 const root: string = process.cwd();
-
 export default ({ command }: ConfigEnv): UserConfigExport => {
   const prodMock = true;
   return {

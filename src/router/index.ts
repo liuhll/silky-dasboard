@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, Router } from "vue-router";
 
 import homeRouter from "./modules/home";
+import hostRouter from "./modules/host";
 
 import remainingRouter from "./modules/remaining"; //静态路由
 
@@ -13,7 +14,8 @@ import Layout from "/@/layout/index.vue";
 const modulesRoutes = import.meta.glob("/src/views/*/*/*.vue");
 
 const constantRoutes: Array<any> = [
-  homeRouter
+  homeRouter,
+  hostRouter
 ];
 
 // 按照路由中meta下的rank等级升序来排序路由
