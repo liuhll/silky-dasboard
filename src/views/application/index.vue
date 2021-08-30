@@ -21,9 +21,7 @@
        </div>
      </el-card>
      <el-card class="box-card">
-      <template #header>
-        <span>微服务详情</span>
-      </template>
+
       <div>
        <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="微服务实例" name="first">微服务实例</el-tab-pane>
