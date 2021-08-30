@@ -42,7 +42,8 @@ export const menusConfig = {
       permissionPage: "页面权限",
       permissionButton: "按钮权限",
       externalLink: "外链",
-      hsapplicationlist: "应用列表"
+      hsapplicationlist: "微服务应用",
+      hsgateway: "网关"
     }
   },
   en: {
@@ -79,7 +80,8 @@ export const menusConfig = {
       permissionPage: "Page Permission",
       permissionButton: "Button Permission",
       externalLink: "External Link",
-      hsapplicationlist: "Application List"
+      hsapplicationlist: "Application List",
+      hsgateway: "Gateway"
     }
   }
 };
@@ -138,12 +140,12 @@ const localesList = [menusConfig, buttonConfig];
 
 export const localesConfigs = {
   zh: {
-    message: Object.assign({}, ...localesList.map(v => v.zh.message)),
+    message: Object.assign({ }, ...localesList.map(v => v.zh.message)),
     ...zhVxeTable,
     ...zhLocale
   },
   en: {
-    message: Object.assign({}, ...localesList.map(v => v.en.message)),
+    message: Object.assign({ }, ...localesList.map(v => v.en.message)),
     ...enVxeTable,
     ...enLocale
   }

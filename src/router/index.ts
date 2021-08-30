@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory, Router } from "vue-router";
 
 import homeRouter from "./modules/home";
-import hostRouter from "./modules/host";
+import applicationRouter from "./modules/application";
+import gatewayRouter from "./modules/gateway";
 
 import remainingRouter from "./modules/remaining"; //静态路由
 
@@ -15,7 +16,8 @@ const modulesRoutes = import.meta.glob("/src/views/*/*/*.vue");
 
 const constantRoutes: Array<any> = [
   homeRouter,
-  hostRouter
+  applicationRouter,
+  gatewayRouter
 ];
 
 // 按照路由中meta下的rank等级升序来排序路由
@@ -66,14 +68,14 @@ const router = createRouter({
 
 export const initRouter = (name, next?, to?) => {
 
-  return new Promise(resolve=>{
+  return new Promise(resolve => {
     usePermissionStoreHook().changeSetting([]);
     resolve(router);
     router.addRoute({
       path: "/:pathMatch(.*)",
       redirect: "/error/404"
     });
-   
+
   });
 };
 

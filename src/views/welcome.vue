@@ -1,48 +1,74 @@
 <template>
-  <div class="welcome">
-    <p>silky dashboard</p>
-
+  <div>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>集群概要信息</span>
+      </div>
+      <div>
+        <el-card
+          class="grid-content box-card-item"
+          v-for="(item, index) in profiles"
+          :key="index"
+        >
+          <div slot="header" class="clearfix">
+            <span>{{ item.title }}</span>
+          </div>
+          <div>
+            <span> 数量 </span>
+            <span> {{ item.count }}</span>
+          </div>
+        </el-card>
+      </div>
+    </el-card>
   </div>
 </template>
 
 <script lang="ts">
+import { getProfiles } from "/@/api/profile";
+import { ref } from "vue";
 
+export default {
+  name: "Welcome",
+  setup() {
+    let profiles = ref([]);
+    const loadProfiles = async () => {
+      getProfiles().then(result => {
+        const { data } = result;
+        profiles.value = data;
+      });
+    };
+    loadProfiles();
+    return {
+      profiles
+    };
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-.welcome {
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+.box-card {
   width: 100%;
-  height: 100%;
-  margin-top: 1px;
-  .top-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 120px;
-    background: #fff;
-    padding: 20px;
-    border-bottom: 0.5px solid rgba($color: #ccc, $alpha: 0.3);
-    .left-mark {
-      display: flex;
-      align-items: center;
-      img {
-        display: block;
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
-        margin-right: 10px;
-        cursor: pointer;
-      }
-    }
-  }
-  .box-card {
-    width: 80vw;
-    margin: 10px auto;
-    position: relative;
-    #brokenLine {
-      width: 100%;
-      height: 50vh;
-    }
-  }
+  margin: 10px;
+}
+.box-card-item {
+  width: 250px;
+  float: left;
+  margin: 10px;
 }
 </style>
