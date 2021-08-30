@@ -7,7 +7,7 @@ const hostRouter = {
   redirect: "/gateway/index",
   meta: {
     icon: "el-icon-set-up",
-    title: "message.hsgatewaylist",
+    title: "message.hsgateway",
     showLink: true,
     savedPosition: true,
     rank: 1

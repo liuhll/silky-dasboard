@@ -1,17 +1,17 @@
 <template>
   <div>
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>集群概要信息</span>
-      </div>
+      <template #header>
+       <span>集群概要信息</span>
+      </template>
       <div>
         <el-card
           class="grid-content box-card-item"
           v-for="(item, index) in profiles"
           :key="index"
         >
-          <div slot="header" class="clearfix">
-            <span>{{ item.title }}</span>
+          <div>
+           <span>{{ item.title }}</span>
           </div>
           <div>
             <span> 数量 </span>
