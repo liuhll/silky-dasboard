@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <template #header>
-       <span>集群概要信息</span>
+        <span>集群概要信息</span>
       </template>
       <div>
         <el-card
@@ -11,7 +11,7 @@
           :key="index"
         >
           <div>
-           <span>{{ item.title }}</span>
+            <span>{{ item.title }}</span>
           </div>
           <div>
             <span> 数量 </span>
@@ -24,16 +24,16 @@
 </template>
 
 <script lang="ts">
-import { getProfiles } from "/@/api/profile";
+import { useProfileStoreHook } from "/@/store/modules/profile";
 import { ref } from "vue";
 
 export default {
   name: "Welcome",
   setup() {
+    const profileStore = useProfileStoreHook();
     let profiles = ref([]);
     const loadProfiles = async () => {
-      getProfiles().then(result => {
-        const { data } = result;
+      profileStore.getProfiles().then(data => {
         profiles.value = data;
       });
     };
