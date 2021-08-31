@@ -8,6 +8,6 @@ export const getApplicationDetail = (appName) => {
   return http.request("get", `/api/silky/application/${appName}/detail`)
 }
 
-export const getApplicationInstances = (appName) => {
-  return http.request("get", `/api/silky/application/${appName}/instances`)
+export const getApplicationInstances = (appName, queryInstanceCondition) => {
+  return http.request("get", `/api/silky/application/${appName}/instances`, queryInstanceCondition)
 }
