@@ -66,11 +66,9 @@
               layout="prev, pager, next"
               :total="applicationInstances.totalCount"
               :page-size="queryInstanceCondition.pageSize"
-              v-show="
-                applicationInstances.hasNextPages ||
-                applicationInstances.hasPrevPages
-              "
-              @size-change="getApplicationInstaces"
+              v-model:current-page="queryInstanceCondition.pageIndex"
+              :hide-on-single-page="true"
+              @current-change="getApplicationInstaces"
             >
             </el-pagination>
           </el-tab-pane>
@@ -80,7 +78,7 @@
                 <span>普通服务</span>
               </template>
               <el-table
-                :data="applicationDetail.appServiceEntries"
+                :data="appServiceEntries.data"
                 :span-method="objectSpanMethod"
               >
                 <el-table-column
@@ -103,10 +101,29 @@
                 </el-table-column>
                 <el-table-column label="webapi" prop="webApi"></el-table-column>
                 <el-table-column
-                  label="http请求方法"
-                  prop="httpMethod"
-                ></el-table-column>
+                  label="http请求方法">
+                  <template #default="scope">
+                    <el-tag v-if="scope.row.httpMethod != null" type="success"> {{ displayHttpMethod(scope.row.httpMethod) }}</el-tag>
+                  </template>                
+                </el-table-column>
                 <el-table-column label="开发者" prop="author"></el-table-column>
+              </el-table>
+              <el-pagination
+               layout="prev, pager, next"
+               :total="appServiceEntries.totalCount"
+               :page-size="appServiceEntries.pageSize"
+               v-model:currentPage="appServiceEntries.pageIndex"
+               :hide-on-single-page="true"
+               @current-change="getAppServiceEntries()">
+              </el-pagination>
+            </el-card>
+            <el-card  v-if="wsServices.length >0">
+              <template #header>
+                <span>WebSocket服务</span>
+              </template>
+              <el-table :data="wsServices">
+                <el-table-column label="服务" prop="appService"></el-table-column>
+                <el-table-column label="websocket会话地址" prop="wsPath"></el-table-column>
               </el-table>
             </el-card>
           </el-tab-pane>
@@ -117,14 +134,26 @@
 </template>
 
 <script lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import {
-  applicationStore,
   useApplicationStoreHook
 } from "/@/store/modules/applications";
 export default {
   name: "Application",
   setup() {
+    const enum HttpMethod {
+      Get = 0,
+      Put = 1,
+      Delete = 2,
+      Post = 3,
+      Head = 4,
+      Trace = 5,
+      Patch = 6,
+      Connect = 7,
+      Options = 8,
+      Custom = 9,
+      None = 255, // 0xFF
+    }
     const applicationsStore = useApplicationStoreHook();
     let applications = ref([]);
     let activeName = ref("first");
@@ -135,6 +164,18 @@ export default {
       pageIndex: 1,
       pageSize: 10
     });
+
+    let appServiceEntries = ref({
+      data: [],
+      totalCount: 0,
+      pageIndex: 1,
+      pageSize: 10
+    })
+
+    let wsServices = ref([]);
+
+    let allServiceEntries = [];
+
     let spanArr = [];
 
     const loadApplications = () => {
@@ -156,7 +197,9 @@ export default {
     const getApplicationDetail = appName => {
       applicationsStore.getApplicationDetail(appName).then(data => {
         applicationDetail.value = data;
-        getSpanArr(data["appServiceEntries"]);
+        allServiceEntries = data['appServiceEntries'];
+        wsServices.value = data['wsServices'];
+        getAppServiceEntries();
       });
     };
     const handleClick = (tab, event) => {};
@@ -166,6 +209,13 @@ export default {
       getApplicationInstaces(selectedAppName, queryInstanceCondition.value);
       getApplicationDetail(selectedAppName);
     };
+
+    const getAppServiceEntries = () => {
+      appServiceEntries.value.totalCount = allServiceEntries.length;
+      appServiceEntries.value.data = allServiceEntries.slice((appServiceEntries.value.pageIndex - 1) * appServiceEntries.value.pageSize,
+      appServiceEntries.value.pageIndex * appServiceEntries.value.pageSize);
+      getSpanArr(appServiceEntries.value.data);
+    }
 
     const getSpanArr = (data: any[]) => {
       spanArr = [];
@@ -196,15 +246,21 @@ export default {
         };
       }
     };
-
+  const displayHttpMethod = (httpMethod:Number) => {
+    return HttpMethod[httpMethod];
+  };
     return {
       applications,
       applicationInstances,
       activeName,
-      handleSelectApplication,
       applicationDetail,
       queryInstanceCondition,
-      objectSpanMethod
+      appServiceEntries,
+      wsServices,
+      objectSpanMethod,
+      displayHttpMethod,      
+      handleSelectApplication,
+      getAppServiceEntries
     };
   }
 };
