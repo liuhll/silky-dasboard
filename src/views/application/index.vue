@@ -75,7 +75,7 @@
           <el-tab-pane label="服务详情" name="second">
             <el-card>
               <template #header>
-                <span>普通服务</span>
+                <span>{{ selectedAppName }} 应用服务</span>
               </template>
               <el-table
                 :data="appServiceEntries.data"
@@ -100,30 +100,38 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="webapi" prop="webApi"></el-table-column>
-                <el-table-column
-                  label="http请求方法">
+                <el-table-column label="http请求方法">
                   <template #default="scope">
-                    <el-tag v-if="scope.row.httpMethod != null" type="success"> {{ displayHttpMethod(scope.row.httpMethod) }}</el-tag>
-                  </template>                
+                    <el-tag v-if="scope.row.httpMethod != null" type="success">
+                      {{ displayHttpMethod(scope.row.httpMethod) }}</el-tag
+                    >
+                  </template>
                 </el-table-column>
                 <el-table-column label="开发者" prop="author"></el-table-column>
               </el-table>
               <el-pagination
-               layout="prev, pager, next"
-               :total="appServiceEntries.totalCount"
-               :page-size="appServiceEntries.pageSize"
-               v-model:currentPage="appServiceEntries.pageIndex"
-               :hide-on-single-page="true"
-               @current-change="getAppServiceEntries()">
+                layout="prev, pager, next"
+                :total="appServiceEntries.totalCount"
+                :page-size="appServiceEntries.pageSize"
+                v-model:currentPage="appServiceEntries.pageIndex"
+                :hide-on-single-page="true"
+                @current-change="getAppServiceEntries()"
+              >
               </el-pagination>
             </el-card>
-            <el-card  v-if="wsServices.length >0">
+            <el-card v-if="wsServices.length > 0">
               <template #header>
-                <span>WebSocket服务</span>
+                <span>{{ selectedAppName }} WebSocket服务</span>
               </template>
               <el-table :data="wsServices">
-                <el-table-column label="服务" prop="appService"></el-table-column>
-                <el-table-column label="websocket会话地址" prop="wsPath"></el-table-column>
+                <el-table-column
+                  label="服务"
+                  prop="appService"
+                ></el-table-column>
+                <el-table-column
+                  label="websocket会话地址"
+                  prop="wsPath"
+                ></el-table-column>
               </el-table>
             </el-card>
           </el-tab-pane>
@@ -135,9 +143,7 @@
 
 <script lang="ts">
 import { ref } from "vue";
-import {
-  useApplicationStoreHook
-} from "/@/store/modules/applications";
+import { useApplicationStoreHook } from "/@/store/modules/applications";
 export default {
   name: "Application",
   setup() {
@@ -152,14 +158,14 @@ export default {
       Connect = 7,
       Options = 8,
       Custom = 9,
-      None = 255, // 0xFF
+      None = 255 // 0xFF
     }
     const applicationsStore = useApplicationStoreHook();
     let applications = ref([]);
     let activeName = ref("first");
     let applicationInstances = ref({});
     let applicationDetail = ref({});
-    let selectedAppName: string;
+    let selectedAppName = ref("");
     let queryInstanceCondition = ref({
       pageIndex: 1,
       pageSize: 10
@@ -170,7 +176,7 @@ export default {
       totalCount: 0,
       pageIndex: 1,
       pageSize: 10
-    })
+    });
 
     let wsServices = ref([]);
 
@@ -181,9 +187,12 @@ export default {
     const loadApplications = () => {
       applicationsStore.getApplications().then(data => {
         applications.value = data;
-        selectedAppName = data[0].hostName;
-        getApplicationInstaces(selectedAppName, queryInstanceCondition.value);
-        getApplicationDetail(selectedAppName);
+        selectedAppName.value = data[0].hostName;
+        getApplicationInstaces(
+          selectedAppName.value,
+          queryInstanceCondition.value
+        );
+        getApplicationDetail(selectedAppName.value);
       });
     };
 
@@ -197,25 +206,31 @@ export default {
     const getApplicationDetail = appName => {
       applicationsStore.getApplicationDetail(appName).then(data => {
         applicationDetail.value = data;
-        allServiceEntries = data['appServiceEntries'];
-        wsServices.value = data['wsServices'];
+        allServiceEntries = data["appServiceEntries"];
+        wsServices.value = data["wsServices"];
         getAppServiceEntries();
       });
     };
     const handleClick = (tab, event) => {};
     loadApplications();
     const handleSelectApplication = applicationInfo => {
-      selectedAppName = applicationInfo.hostName;
-      getApplicationInstaces(selectedAppName, queryInstanceCondition.value);
-      getApplicationDetail(selectedAppName);
+      selectedAppName.value = applicationInfo.hostName;
+      getApplicationInstaces(
+        selectedAppName.value,
+        queryInstanceCondition.value
+      );
+      getApplicationDetail(selectedAppName.value);
     };
 
     const getAppServiceEntries = () => {
       appServiceEntries.value.totalCount = allServiceEntries.length;
-      appServiceEntries.value.data = allServiceEntries.slice((appServiceEntries.value.pageIndex - 1) * appServiceEntries.value.pageSize,
-      appServiceEntries.value.pageIndex * appServiceEntries.value.pageSize);
+      appServiceEntries.value.data = allServiceEntries.slice(
+        (appServiceEntries.value.pageIndex - 1) *
+          appServiceEntries.value.pageSize,
+        appServiceEntries.value.pageIndex * appServiceEntries.value.pageSize
+      );
       getSpanArr(appServiceEntries.value.data);
-    }
+    };
 
     const getSpanArr = (data: any[]) => {
       spanArr = [];
@@ -246,9 +261,9 @@ export default {
         };
       }
     };
-  const displayHttpMethod = (httpMethod:Number) => {
-    return HttpMethod[httpMethod];
-  };
+    const displayHttpMethod = (httpMethod: Number) => {
+      return HttpMethod[httpMethod];
+    };
     return {
       applications,
       applicationInstances,
@@ -257,8 +272,9 @@ export default {
       queryInstanceCondition,
       appServiceEntries,
       wsServices,
+      selectedAppName,
       objectSpanMethod,
-      displayHttpMethod,      
+      displayHttpMethod,
       handleSelectApplication,
       getAppServiceEntries
     };
