@@ -29,12 +29,12 @@
       <el-table-column label="应用" prop="application" width="200"></el-table-column>
       <el-table-column label="服务" prop="appService" width="320"></el-table-column>
       <el-table-column label="服务条目" prop="serviceId" width="460"></el-table-column>
-      <el-table-column label="是否在线">
+      <el-table-column label="是否可用">
         <template #default="scope">
           <el-tag
-            :type="scope.row.isOnline ? 'success' : 'danger'"
+            :type="scope.row.isEnable ? 'success' : 'danger'"
           >
-            {{ scope.row.isOnline ? "是" : "否" }}
+            {{ scope.row.isEnable ? "是" : "否" }}
           </el-tag>
         </template>
       </el-table-column>

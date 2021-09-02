@@ -54,7 +54,7 @@
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="是否路由">
+              <el-table-column label="是否在线">
                 <template #default="scope">
                   <el-tag :type="scope.row.isEnable ? 'success' : 'danger'">
                     {{ scope.row.isEnable ? "是" : "否" }}
