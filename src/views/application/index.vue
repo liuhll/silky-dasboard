@@ -54,7 +54,7 @@
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="是否会被路由">
+              <el-table-column label="是否路由">
                 <template #default="scope">
                   <el-tag :type="scope.row.isEnable ? 'success' : 'danger'">
                     {{ scope.row.isEnable ? "是" : "否" }}
@@ -84,12 +84,14 @@
                 <el-table-column
                   label="服务"
                   prop="appService"
+                  width="320"
                 ></el-table-column>
                 <el-table-column
                   label="服务条目Id"
                   prop="serviceId"
+                  width="450"
                 ></el-table-column>
-                <el-table-column label="方法" prop="method"></el-table-column>
+                <el-table-column label="方法" prop="method"  width="100"></el-table-column>
                 <el-table-column label="禁用外网">
                   <template #default="scope">
                     <el-tag
@@ -99,7 +101,7 @@
                     </el-tag>
                   </template>
                 </el-table-column>
-                <el-table-column label="webapi" prop="webApi"></el-table-column>
+                <el-table-column label="webapi" prop="webApi"  width="200"></el-table-column>
                 <el-table-column label="http请求方法">
                   <template #default="scope">
                     <el-tag v-if="scope.row.httpMethod != null" type="success">
@@ -144,22 +146,10 @@
 <script lang="ts">
 import { ref } from "vue";
 import { useApplicationStoreHook } from "/@/store/modules/applications";
+import { HttpMethod } from "/@/utils/enums/HttpMethod";
 export default {
   name: "Application",
   setup() {
-    const enum HttpMethod {
-      Get = 0,
-      Put = 1,
-      Delete = 2,
-      Post = 3,
-      Head = 4,
-      Trace = 5,
-      Patch = 6,
-      Connect = 7,
-      Options = 8,
-      Custom = 9,
-      None = 255 // 0xFF
-    }
     const applicationsStore = useApplicationStoreHook();
     let applications = ref([]);
     let activeName = ref("first");
@@ -211,7 +201,6 @@ export default {
         getAppServiceEntries();
       });
     };
-    const handleClick = (tab, event) => {};
     loadApplications();
     const handleSelectApplication = applicationInfo => {
       selectedAppName.value = applicationInfo.hostName;
