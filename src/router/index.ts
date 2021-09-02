@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory, Router } from "vue-router";
 import homeRouter from "./modules/home";
 import applicationRouter from "./modules/application";
 import gatewayRouter from "./modules/gateway";
+import serviceRouter from "./modules/service";
 
 import remainingRouter from "./modules/remaining"; //静态路由
 
@@ -17,6 +18,7 @@ const modulesRoutes = import.meta.glob("/src/views/*/*/*.vue");
 const constantRoutes: Array<any> = [
   homeRouter,
   applicationRouter,
+  serviceRouter,
   gatewayRouter
 ];
 

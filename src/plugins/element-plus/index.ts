@@ -37,7 +37,11 @@ import {
   ElTableColumn,
   ElProgress,
   ElPageHeader,
-  ElTag
+  ElTag,
+  ElSelect,
+  ElSelectV2,
+  ElOption,
+  ElOptionGroup
 } from "element-plus";
 import "element-plus/packages/theme-chalk/src/base.scss";
 
@@ -78,7 +82,11 @@ const components = [
   ElTableColumn,
   ElProgress,
   ElPageHeader,
-  ElTag
+  ElTag,
+  ElSelect,
+  ElSelectV2,
+  ElOption,
+  ElOptionGroup
 ];
 
 const plugins = [ElLoading];

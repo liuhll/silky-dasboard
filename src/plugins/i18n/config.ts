@@ -42,8 +42,9 @@ export const menusConfig = {
       permissionPage: "页面权限",
       permissionButton: "按钮权限",
       externalLink: "外链",
-      hsapplicationlist: "微服务应用",
-      hsgateway: "网关"
+      hsapplicationlist: "应用",
+      hsgateway: "网关",
+      hsservice: "服务"
     }
   },
   en: {
@@ -81,7 +82,8 @@ export const menusConfig = {
       permissionButton: "Button Permission",
       externalLink: "External Link",
       hsapplicationlist: "Application List",
-      hsgateway: "Gateway"
+      hsgateway: "Gateway",
+      hsservice: "Service"
     }
   }
 };
