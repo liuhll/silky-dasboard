@@ -4,6 +4,7 @@ import homeRouter from "./modules/home";
 import applicationRouter from "./modules/application";
 import gatewayRouter from "./modules/gateway";
 import serviceRouter from "./modules/service";
+import registryCenterRouter from "./modules/registrycenter";
 
 import remainingRouter from "./modules/remaining"; //静态路由
 
@@ -19,7 +20,8 @@ const constantRoutes: Array<any> = [
   homeRouter,
   applicationRouter,
   serviceRouter,
-  gatewayRouter
+  gatewayRouter,
+  registryCenterRouter
 ];
 
 // 按照路由中meta下的rank等级升序来排序路由

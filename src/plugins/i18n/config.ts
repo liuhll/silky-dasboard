@@ -44,7 +44,8 @@ export const menusConfig = {
       externalLink: "外链",
       hsapplicationlist: "应用",
       hsgateway: "网关",
-      hsservice: "服务"
+      hsservice: "服务",
+      hsregistrycenter: "注册中心"
     }
   },
   en: {
@@ -83,7 +84,8 @@ export const menusConfig = {
       externalLink: "External Link",
       hsapplicationlist: "Application List",
       hsgateway: "Gateway",
-      hsservice: "Service"
+      hsservice: "Service",
+      hsregistrycenter: "RegistryCenter:"
     }
   }
 };
