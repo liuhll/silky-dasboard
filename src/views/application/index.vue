@@ -39,7 +39,7 @@
     </el-card>
     <el-card class="box-card">
       <div>
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="activeName">
           <el-tab-pane label="微服务实例" name="first">
             <el-table :data="applicationInstances.items">
               <el-table-column
@@ -91,7 +91,11 @@
                   prop="serviceId"
                   width="450"
                 ></el-table-column>
-                <el-table-column label="方法" prop="method"  width="100"></el-table-column>
+                <el-table-column
+                  label="方法"
+                  prop="method"
+                  width="100"
+                ></el-table-column>
                 <el-table-column label="禁用外网">
                   <template #default="scope">
                     <el-tag
@@ -101,7 +105,11 @@
                     </el-tag>
                   </template>
                 </el-table-column>
-                <el-table-column label="webapi" prop="webApi"  width="200"></el-table-column>
+                <el-table-column
+                  label="webapi"
+                  prop="webApi"
+                  width="200"
+                ></el-table-column>
                 <el-table-column label="http请求方法">
                   <template #default="scope">
                     <el-tag v-if="scope.row.httpMethod != null" type="success">

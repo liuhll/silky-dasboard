@@ -41,7 +41,9 @@ import {
   ElSelect,
   ElSelectV2,
   ElOption,
-  ElOptionGroup
+  ElOptionGroup,
+  ElDescriptions,
+  ElDescriptionsItem
 } from "element-plus";
 import "element-plus/packages/theme-chalk/src/base.scss";
 
@@ -86,7 +88,9 @@ const components = [
   ElSelect,
   ElSelectV2,
   ElOption,
-  ElOptionGroup
+  ElOptionGroup,
+  ElDescriptions,
+  ElDescriptionsItem
 ];
 
 const plugins = [ElLoading];
