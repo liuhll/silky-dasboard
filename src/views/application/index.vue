@@ -15,25 +15,16 @@
           <template #header>
             {{ item.hostName }}
           </template>
-          <div class="body">
-            <ul>
-              <li>
-                <span>主机实例: {{ item.instanceCount }}</span>
-              </li>
-              <li>
-                <span>应用服务: {{ item.appServiceCount }}</span>
-              </li>
-              <li>
-                <span>服务条目: {{ item.serviceEntriesCount }}</span>
-              </li>
-              <li>
-                <span
-                  >WebSocket服务:
-                  {{ item.hasWsService ? "支持" : "不支持" }}</span
-                >
-              </li>
-            </ul>
-          </div>
+          <el-descriptions :column="1">
+            <el-descriptions-item label="主机实例">{{ item.instanceCount }}</el-descriptions-item>
+            <el-descriptions-item label="应用服务">{{ item.appServiceCount }}</el-descriptions-item>
+            <el-descriptions-item label="服务条目">{{ item.serviceEntriesCount }}</el-descriptions-item>
+            <el-descriptions-item label="是否支持WebSocket">
+              <el-tag :type="item.hasWsService ? 'success' : 'danger'">
+              {{ item.hasWsService ? "支持" : "不支持" }}
+              </el-tag>
+            </el-descriptions-item>
+          </el-descriptions>
         </el-card>
       </div>
     </el-card>
