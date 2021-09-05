@@ -261,7 +261,7 @@ export default {
       return HttpMethod[httpMethod];
     };
     const handleSelectedInstance = (row) => {
-      router.push({ name: 'instance', query: { address: row.address }})
+      router.push({ name: 'instance', query: { address: row.address }, params: { address: row.address, hostName: row.hostName, isHealth: row.isHealth, isEnable: row.isEnable }})
     };
     const handleSelectServiceEntry = (row) => {
       router.push( { name: 'serviceentry', query: { serviceEntryId: row.serviceId }});

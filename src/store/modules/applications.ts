@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getApplications, getApplicationDetail, getApplicationInstances } from "/@/api/application";
+import { getApplications, getApplicationDetail, getApplicationInstances, getInstanceDetail, getInstanceServiceHandle, getInstanceServiceInvoke } from "/@/api/application";
 
 export const applicationStore = defineStore({
   id: "pure-application",
@@ -28,6 +28,36 @@ export const applicationStore = defineStore({
     getApplicationDetail(appName) {
       return new Promise((resolve, reject) => {
         getApplicationDetail(appName).then(response => {
+          const { data } = response
+          resolve(data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getInstanceDetail(address) {
+      return new Promise((resolve, reject) => {
+        getInstanceDetail(address).then(response => {
+          const { data } = response
+          resolve(data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getInstanceServiceHandle(address,conditions) {
+      return new Promise((resolve, reject) => {
+        getInstanceServiceHandle(address,conditions).then(response => {
+          const { data } = response
+          resolve(data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getInstanceServiceInvoke(address, conditions) {
+      return new Promise((resolve, reject) => {
+        getInstanceServiceInvoke(address, conditions).then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
