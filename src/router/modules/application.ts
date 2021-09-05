@@ -22,7 +22,7 @@ const hostRouter = {
         showLink: true,
         savedPosition: true
       }
-    }
+    } 
   ]
 };
 

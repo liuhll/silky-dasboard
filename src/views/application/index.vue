@@ -30,14 +30,18 @@
     </el-card>
     <el-card class="box-card">
       <div>
-        <el-tabs v-model="activeName">
+        <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="微服务实例" name="first">
             <el-table :data="applicationInstances.items">
               <el-table-column
                 label="主机名称"
                 prop="hostName"
               ></el-table-column>
-              <el-table-column label="地址" prop="address"></el-table-column>
+              <el-table-column label="地址">
+                <template #default="scope">
+                  <el-button type="text" @click="handleSelectedInstance(scope.row)">{{scope.row.address}}</el-button>
+                </template>
+              </el-table-column>
               <el-table-column label="健康状态">
                 <template #default="scope">
                   <el-tag :type="scope.row.isHealth ? 'success' : 'danger'">
@@ -79,9 +83,12 @@
                 ></el-table-column>
                 <el-table-column
                   label="服务条目Id"
-                  prop="serviceId"
                   width="450"
-                ></el-table-column>
+                >
+                  <template #default="scope">
+                    <el-button type="text" @click="handleSelectServiceEntry(scope.row)">{{scope.row.serviceId}}</el-button>
+                  </template>
+                </el-table-column>
                 <el-table-column
                   label="方法"
                   prop="method"
@@ -146,6 +153,7 @@
 import { ref } from "vue";
 import { useApplicationStoreHook } from "/@/store/modules/applications";
 import { HttpMethod } from "/@/utils/enums/HttpMethod";
+import { useRouter } from "vue-router";
 export default {
   name: "Application",
   setup() {
@@ -168,10 +176,10 @@ export default {
     });
 
     let wsServices = ref([]);
-
     let allServiceEntries = [];
-
     let spanArr = [];
+
+    let router = useRouter();
 
     const loadApplications = () => {
       applicationsStore.getApplications().then(data => {
@@ -252,6 +260,17 @@ export default {
     const displayHttpMethod = (httpMethod: Number) => {
       return HttpMethod[httpMethod];
     };
+    const handleSelectedInstance = (row) => {
+      router.push({ name: 'instance', query: { address: row.address }})
+    };
+    const handleSelectServiceEntry = (row) => {
+      router.push( { name: 'serviceentry', query: { serviceEntryId: row.serviceId }});
+    };
+
+    const handleClick = (tab, event)=>{
+
+    }
+
     return {
       applications,
       applicationInstances,
@@ -264,7 +283,10 @@ export default {
       objectSpanMethod,
       displayHttpMethod,
       handleSelectApplication,
-      getAppServiceEntries
+      getAppServiceEntries,
+      handleSelectedInstance,
+      handleSelectServiceEntry,
+      handleClick
     };
   }
 };

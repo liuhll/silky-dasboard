@@ -45,7 +45,9 @@ export const menusConfig = {
       hsapplicationlist: "应用",
       hsgateway: "网关",
       hsservice: "服务",
-      hsregistrycenter: "注册中心"
+      hsregistrycenter: "注册中心",
+      hsinstance: "实例",
+      hsserviceentry: "服务条目"
     }
   },
   en: {
@@ -85,7 +87,9 @@ export const menusConfig = {
       hsapplicationlist: "Application List",
       hsgateway: "Gateway",
       hsservice: "Service",
-      hsregistrycenter: "RegistryCenter:"
+      hsregistrycenter: "RegistryCenter",
+      hsinstance: "Instance",
+      hsserviceentry:"ServiceEntry"
     }
   }
 };

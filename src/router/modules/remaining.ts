@@ -21,6 +21,50 @@ const remainingRouter = [
       rank: 102
     }
   },
+  {
+    path: "/application/instance",
+    component: Layout,
+    redirect: "/application/instance",
+    meta: {
+      title: "message.hsapplicationlist",
+      showLink: false,
+      rank: 103
+    },
+    children:[
+      {
+        path: "/application/instance",
+        name: "instance",
+        component: () => import("/@/views/application/instance.vue"),
+        meta: {
+          title: "message.hsinstance",
+          showLink: false,
+          savedPosition: false
+        }
+      } 
+    ]
+  },
+  {
+    path: "/service/serviceentry",
+    component: Layout,
+    redirect: "/service/serviceentry",
+    meta: {
+      title: "message.hsservice",
+      showLink: false,
+      rank: 103
+    },
+    children:[
+      {
+        path: "/service/serviceentrydetail",
+        name: "serviceentry",
+        component: () => import("/@/views/service/serviceentry.vue"),
+        meta: {
+          title: "message.hsserviceentry",
+          showLink: false,
+          savedPosition: false
+        }
+      } 
+    ]
+  },
   // {
   //   // 找不到路由重定向到404页面
   //   path: "/:pathMatch(.*)",

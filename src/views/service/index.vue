@@ -60,9 +60,12 @@
       ></el-table-column>
       <el-table-column
         label="服务条目"
-        prop="serviceId"
         width="460"
-      ></el-table-column>
+      >
+        <template #default="scope">
+          <el-button type="text" @click="handleSelectServiceEntry(scope.row)">{{scope.row.serviceId}}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="是否可用">
         <template #default="scope">
           <el-tag :type="scope.row.isEnable ? 'success' : 'danger'">
@@ -129,11 +132,13 @@ import { ref, onMounted } from "vue";
 import { useApplicationStoreHook } from "/@/store/modules/applications";
 import { useServiceStoreHook } from "/@/store/modules/service";
 import { HttpMethod } from "/@/utils/enums/HttpMethod";
+import { useRouter } from "vue-router";
 export default {
   name: "Service",
   setup() {
     const applicationStore = useApplicationStoreHook();
     const serviceStore = useServiceStoreHook();
+    const router = useRouter();
 
     let applications = ref([]);
     let appServices = ref([]);
@@ -185,6 +190,10 @@ export default {
       loadAppServices();
       searchServiceEntriesCondition.value.appService = null;
       appServices.value = [];
+    };
+
+    const handleSelectServiceEntry = (row) => {
+      router.push( { name: 'serviceentry', query: { serviceEntryId: row.serviceId }});
     };
 
     const flitterData = (data: any[]) => {
@@ -246,7 +255,8 @@ export default {
       handleChangeApplication,
       loadServiceEntries,
       displayHttpMethod,
-      objectSpanMethods
+      objectSpanMethods,
+      handleSelectServiceEntry
     };
   }
 };
