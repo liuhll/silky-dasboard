@@ -72,7 +72,14 @@
       <div>
         <el-table :data="serviceEntryInstances.items">
           <el-table-column label="服务条目" prop="serviceId" width="420"></el-table-column>
-          <el-table-column label="实例地址" prop="address"></el-table-column>
+          <el-table-column label="实例地址">
+            <template #default="scope">
+              <el-button
+                type="text"
+                @click="handleSelectedInstance(scope.row)">
+                {{ scope.row.address }}</el-button>
+            </template>
+          </el-table-column>
           <el-table-column label="是否健康">
             <template #default="scope">
              <el-tag :type="scope.row.isHealth ? 'success' : 'danger'">
@@ -167,6 +174,16 @@ export default {
       loadServiceEntryInstances();
     });
 
+    const handleSelectedInstance = row => {
+      router.push({
+        name: "instance",
+        query: { address: row.address },
+        params: {
+          isHealth: row.isHealth,
+          isEnable: row.isEnable
+        }
+      });
+    };    
     return {
       serviceEntry,
       governanceOptions,
@@ -175,7 +192,8 @@ export default {
       displayHttpMethod,
       displayShuntStrategy,
       loadServiceEntryInstances,
-      goBack
+      goBack,
+      handleSelectedInstance
     }
   }
 }

@@ -47,9 +47,8 @@
                 <template #default="scope">
                   <el-button
                     type="text"
-                    @click="handleSelectedInstance(scope.row)"
-                    >{{ scope.row.address }}</el-button
-                  >
+                    @click="handleSelectedInstance(scope.row)">
+                    {{ scope.row.address }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="健康状态">
@@ -276,8 +275,6 @@ export default {
         name: "instance",
         query: { address: row.address },
         params: {
-          address: row.address,
-          hostName: row.hostName,
           isHealth: row.isHealth,
           isEnable: row.isEnable
         }

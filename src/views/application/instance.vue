@@ -3,18 +3,21 @@
     <el-button type="text" icon="el-icon-back" @click="goBack()"
       >返回</el-button
     >
-    <el-descriptions :title="instanceInfo.hostName">
+    <el-descriptions :title="instanceInfo.hostName" :column="4">
       <el-descriptions-item label="实例地址">
-        <el-tag>{{ instanceInfo.address }}</el-tag></el-descriptions-item
-      >
+        <el-tag>{{ instanceInfo.address }}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="开始时间">
+        <el-tag>{{ displayDate(instanceInfo.startTime) }}</el-tag>
+      </el-descriptions-item>      
       <el-descriptions-item label="是否健康">
-        <el-tag :type="instanceInfo.isHealth === 'true' ? 'success' : 'danger'">
-          {{ instanceInfo.isHealth === "true" ? "健康" : "不健康" }}
+        <el-tag :type="instanceStatus.isHealth === 'true' ? 'success' : 'danger'">
+          {{ instanceStatus.isHealth === "true" ? "健康" : "不健康" }}
         </el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="是否在线">
-        <el-tag :type="instanceInfo.isEnable === 'true' ? 'success' : 'danger'">
-          {{ instanceInfo.isEnable === "true" ? "在线" : "离线" }}
+        <el-tag :type="instanceStatus.isEnable === 'true' ? 'success' : 'danger'">
+          {{ instanceStatus.isEnable === "true" ? "在线" : "离线" }}
         </el-tag>
       </el-descriptions-item>
     </el-descriptions>
@@ -59,7 +62,7 @@
             prop="serviceId"
             width="400"
           ></el-table-column>
-          <el-table-column label="消费者地址">
+          <el-table-column label="消费者地址" width="160">
             <template #default="scope">
               <el-tag>{{ scope.row.address }} </el-tag>
             </template>
@@ -97,6 +100,14 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+            layout="prev, pager, next"
+            :total="serviceHandles.totalCount"
+            :page-size="serviceHandlePageRequest.pageSize"
+            v-model:currentPage="serviceHandlePageRequest.pageIndex"
+            :hide-on-single-page="true"
+            @current-change="getInstanceServiceHandle()">
+        </el-pagination>        
       </el-tab-pane>
       <el-tab-pane label="Rpc请求信息" name="second">
         <el-descriptions title="该实例Rpc请求概要信息">
@@ -135,12 +146,12 @@
             prop="serviceId"
             width="400"
           ></el-table-column>
-          <el-table-column label="服务提供者地址(当前状态)">
+          <el-table-column label="服务提供者地址(当前状态)" width="220">
             <template #default="scope">
               <el-tag :type="scope.row.isEnable ? 'success' : 'danger'"
                 >{{ scope.row.address }}
-                {{ scope.row.isEnable ? "(在线)" : "(离线)" }}</el-tag
-              >
+                {{ scope.row.isEnable ? "(在线)" : "(离线)" }}</el-tag>
+              
             </template>
           </el-table-column>
           <el-table-column label="首次调用时间">
@@ -174,6 +185,14 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+            layout="prev, pager, next"
+            :total="serviceInvokes.totalCount"
+            :page-size="serviceInvokePageRequest.pageSize"
+            v-model:currentPage="serviceInvokePageRequest.pageIndex"
+            :hide-on-single-page="true"
+            @current-change="getInstanceServiceInvoke()">
+        </el-pagination>     
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -191,6 +210,7 @@ export default {
     const route = useRoute();
     const applicationStore = useApplicationStoreHook();
     const activeName = ref("first");
+    let instanceStatus = ref({});
     let instanceInfo = ref({});
     let instanceHandleInfo = ref({});
     let instanceInvokeInfo = ref({});
@@ -215,10 +235,16 @@ export default {
 
     const getInstanceDetail = () => {
       const address = storageLocal.getItem("instanceAddress");
-      if (address) {
+     
+      if (address && instanceStatus.value['isHealth'] === 'true') {
         applicationStore.getInstanceDetail(address).then(data => {
           instanceHandleInfo.value = data["handleInfo"];
           instanceInvokeInfo.value = data["invokeInfo"];
+          instanceInfo.value = {
+            hostName: data["hostName"],
+            address: data["address"],
+            startTime: data["startTime"]
+          }
         });
       }
     };
@@ -267,9 +293,9 @@ export default {
         storageLocal.setItem("instanceAddress", address);
       }
       if (Object.keys(route.params).length > 0) {
-        storageLocal.setItem("instance", route.params);
+        storageLocal.setItem("instanceStatus", route.params);
       }
-      instanceInfo.value = storageLocal.getItem("instance");
+      instanceStatus.value = storageLocal.getItem("instanceStatus");
       getInstanceServiceHandle();
       getInstanceServiceInvoke();
       getInstanceDetail();
@@ -338,17 +364,22 @@ export default {
     };
 
     return {
-      instanceInfo,
+      instanceStatus,
       instanceHandleInfo,
       instanceInvokeInfo,
+      serviceHandlePageRequest,
+      serviceInvokePageRequest,
       activeName,
       serviceHandles,
       serviceInvokes,
+      instanceInfo,
       goBack,
       displayDate,
       displayAet,
       objectSpanHandleMethod,
-      objectSpanInvokeMethod
+      objectSpanInvokeMethod,
+      getInstanceServiceHandle,
+      getInstanceServiceInvoke,
     };
   }
 };
