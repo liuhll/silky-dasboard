@@ -26,7 +26,7 @@
         @click="onPanel"
       ></i>
       <!-- 退出登陆 -->
-      <el-dropdown trigger="click">
+      <el-dropdown trigger="click" v-if="useAuth">
         <span class="el-dropdown-link">
           <img :src="favicon" />
           <p>{{ usename }}</p>
@@ -95,6 +95,7 @@ export default defineComponent({
     const route = useRoute();
 
     let usename = storageSession.getItem("info")?.username;
+    let useAuth = window.useAuth || window.useAuth === 'true';
 
     const { locale, t } = useI18n();
 
@@ -149,6 +150,7 @@ export default defineComponent({
       pureApp,
       toggleSideBar,
       usename,
+      useAuth,
       toggleLang,
       logout,
       ch,

@@ -19,30 +19,13 @@
           prefix-icon="el-icon-lock"
         ></el-input>
       </el-form-item>
-      <el-form-item prop="verify">
-        <el-input
-          maxlength="2"
-          onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-          v-model.number="model.verify"
-          placeholder="请输入验证码"
-        ></el-input>
-        <span
-          class="verify"
-          title="刷新"
-          v-html="model.svg"
-          @click.prevent="refreshVerify"
-        ></span>
-      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click.prevent="onBehavior">{{
           tipsFalse
         }}</el-button>
-        <el-button @click="resetForm">重置</el-button>
-        <span class="tips" @click="changPage">{{ tips }}</span>
       </el-form-item>
-      <span title="测试用户 直接登录" class="secret" @click="noSecret"
-        >免密登录</span
-      >
+      
     </el-form>
   </div>
 </template>

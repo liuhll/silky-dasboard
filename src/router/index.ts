@@ -98,17 +98,17 @@ import NProgress from "../utils/progress";
 // const whiteList = ["/login", "/register"];
 
 router.beforeEach((to, _from, next) => {
-  const name = storageSession.getItem("info");
+  const loginInfo = storageSession.getItem("info");
   NProgress.start();
   const { t } = i18n.global;
   // @ts-ignore
   to.meta.title ? (document.title = t(to.meta.title)) : ""; // 动态title
-  if (name) {
+  if ((window.useAuth === false || window.useAuth === 'false') || loginInfo) {
     if (_from?.name) {
       next();
     } else {
       if (usePermissionStoreHook().wholeRoutes.length === 0)
-        initRouter(name.username, next, to).then((router: Router) => {
+        initRouter(loginInfo?.username, next, to).then((router: Router) => {
           router.push(to.path);
         });
       next();

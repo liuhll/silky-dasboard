@@ -11,7 +11,7 @@
 <script lang="ts">
 import { reactive, onBeforeMount } from "vue";
 import info, { ContextProps } from "../components/ReInfo/index.vue";
-import { getRegist, getVerify } from "/@/api/user";
+import { getVerify } from "/@/api/user";
 import { useRouter } from "vue-router";
 import { warnMessage, successMessage } from "/@/utils/message";
 export default {

@@ -15,6 +15,7 @@ import { getVerify, getLogin } from "/@/api/user";
 import { useRouter } from "vue-router";
 import { storageSession } from "/@/utils/storage";
 import { warnMessage, successMessage } from "/@/utils/message";
+import { initRouter } from "/@/router";
 export default {
   name: "login",
   components: {
@@ -38,24 +39,24 @@ export default {
 
     const toPage = (info: Object): void => {
       storageSession.setItem("info", info);
+      initRouter(info?.username).then(()=>{});
       router.push("/");
     };
 
     // 登录
     const onLogin = async () => {
-      let { userName, passWord, verify } = contextInfo;
-      let { code, info, accessToken } = await getLogin({
-        username: userName,
-        password: passWord,
-        verify: verify
+      let { userName, passWord } = contextInfo;
+      let { status, data, errorMessage } = await getLogin({
+        userName: userName,
+        password: passWord
       });
-      code === 0
-        ? successMessage(info) &&
+      status === 200
+        ? successMessage('登陆成功') &&
           toPage({
             username: userName,
-            accessToken
+            accessToken: data
           })
-        : warnMessage(info);
+        : warnMessage(errorMessage);
     };
 
     const refreshVerify = (): void => {

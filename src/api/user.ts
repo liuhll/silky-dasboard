@@ -7,10 +7,5 @@ export const getVerify = (): any => {
 
 // 登录
 export const getLogin = (data: object): any => {
-  return http.request("post", "/login", data);
-};
-
-// 注册
-export const getRegist = (data: object): any => {
-  return http.request("post", "/register", data);
+  return http.request("post", window.authApi, data);
 };

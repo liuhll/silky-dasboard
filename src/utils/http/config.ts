@@ -1,5 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { excludeProps } from "./utils";
+import { storageSession } from "/@/utils/storage";
+
 /**
  * 默认配置
  */
@@ -14,6 +16,11 @@ export const defaultConfig: AxiosRequestConfig = {
 };
 
 export function genConfig(config?: AxiosRequestConfig): AxiosRequestConfig {
+
+  let loginUserInfo = storageSession.getItem("info");
+  if (loginUserInfo && loginUserInfo.accessToken) {
+    defaultConfig.headers.Authorization = loginUserInfo.accessToken;
+  }
   if (!config) {
     return defaultConfig;
   }
