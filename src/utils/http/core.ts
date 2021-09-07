@@ -18,13 +18,25 @@ import {
   EnclosureHttpError
 } from "./types.d";
 
+import { useRouter } from "vue-router";
+import { storageSession } from "/@/utils/storage";
+const router = useRouter();
 class EnclosureHttp {
   constructor() {
     this.httpInterceptorsRequest();
     this.httpInterceptorsResponse();
   }
   // 初始化配置对象
-  private static initConfig: EnclosureHttpRequestConfig = {};
+  private static initConfig: EnclosureHttpRequestConfig = {
+    beforeResponseCallback: (response) => {
+      const { data } = response;
+      const { status } = data;
+      if (status === 401 || status === 4011) {
+        storageSession.removeItem('info');
+        router.push("/login");
+      }
+    }
+  };
 
   // 保存当前Axios实例对象
   private static axiosInstance: AxiosInstance = Axios.create(genConfig());
@@ -102,8 +114,8 @@ class EnclosureHttp {
     this.sourceTokenList =
       this.sourceTokenList.length < 1
         ? this.sourceTokenList.filter(
-            cancelToken => cancelToken.cancelKey !== cancelKey
-          )
+          cancelToken => cancelToken.cancelKey !== cancelKey
+        )
         : [];
   }
 
@@ -166,10 +178,12 @@ class EnclosureHttp {
         if (typeof this.beforeResponseCallback === "function") {
           this.beforeResponseCallback(response);
           this.beforeResponseCallback = undefined;
+          NProgress.done();
           return response.data;
         }
         if (EnclosureHttp.initConfig.beforeResponseCallback) {
           EnclosureHttp.initConfig.beforeResponseCallback(response);
+          NProgress.done();
           return response.data;
         }
         NProgress.done();
