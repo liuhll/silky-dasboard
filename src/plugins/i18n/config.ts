@@ -47,7 +47,8 @@ export const menusConfig = {
       hsservice: "服务",
       hsregistrycenter: "注册中心",
       hsinstance: "实例",
-      hsserviceentry: "服务条目"
+      hsserviceentry: "服务条目",
+      swagger: "Swagger在线文档"
     }
   },
   en: {
@@ -89,7 +90,8 @@ export const menusConfig = {
       hsservice: "Service",
       hsregistrycenter: "RegistryCenter",
       hsinstance: "Instance",
-      hsserviceentry:"ServiceEntry"
+      hsserviceentry:"ServiceEntry",
+      swagger:"Swagger"
     }
   }
 };

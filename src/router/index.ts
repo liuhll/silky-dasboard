@@ -12,6 +12,8 @@ import { storageSession } from "../utils/storage";
 import { i18n } from "/@/plugins/i18n";
 import { usePermissionStoreHook } from "/@/store/modules/permission";
 
+import { getExternalRoutes } from "/@/api/routes";
+
 import Layout from "/@/layout/index.vue";
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/*/*/*.vue");
@@ -40,7 +42,7 @@ export const constantRoutesArr = ascending(constantRoutes).concat(
 export const addAsyncRoutes = (arrRoutes: Array<string>) => {
   if (!arrRoutes || !arrRoutes.length) return;
   arrRoutes.forEach((v: any) => {
-    if (v.redirect) {
+    if (v.redirect || v.meta.isLayout) {
       v.component = Layout;
     } else {
       v.component = modulesRoutes[`/src/views${v.path}/index.vue`];
@@ -73,13 +75,35 @@ const router = createRouter({
 export const initRouter = (name, next?, to?) => {
 
   return new Promise(resolve => {
-    usePermissionStoreHook().changeSetting([]);
-    resolve(router);
-    router.addRoute({
-      path: "/:pathMatch(.*)",
-      redirect: "/error/404"
-    });
 
+    getExternalRoutes().then(({ data }) => {
+      if (!data || data.length === 0) {
+        usePermissionStoreHook().changeSetting([]);
+      } else {
+        addAsyncRoutes(data).map((v: any) => {
+          if (
+            router.options.routes.findIndex(value => value.path === v.path) !==
+            -1
+          ) {
+            return;
+          } else {
+            router.options.routes.push(v);
+            // 最终路由进行升序
+            ascending(router.options.routes);
+            router.addRoute(v.name, v);
+            if (next && to) next({ ...to, replace: true });
+            usePermissionStoreHook().changeSetting(data);
+          }
+          resolve(router);
+        });
+      }
+      router.addRoute({
+        path: "/:pathMatch(.*)",
+        redirect: "/error/404"
+      });
+  
+    });
+  
   });
 };
 

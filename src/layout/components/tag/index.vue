@@ -186,6 +186,9 @@ export default {
           arr.forEach((arrItem: any) => {
             let pathConcat = parentPath + arrItem.path;
             if (arrItem.path === value || pathConcat === value) {
+              if (arrItem.meta.externalLink) {
+                return;
+              }
               routerArrays.push({
                 path: value,
                 meta: arrItem.meta
