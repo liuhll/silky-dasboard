@@ -4,11 +4,11 @@
       <template #header>
         <span>微服务列表</span>
       </template>
-      <div>
+      <div class="application-container">
         <el-card
           shadow="always"
           class="grid-content box-card-item"
-          v-for="(item, index) in applications"
+          v-for="(item, index) in application.items"
           :key="index"
           @click="handleSelectApplication(item)"
         >
@@ -30,9 +30,18 @@
                 {{ item.hasWsService ? "支持" : "不支持" }}
               </el-tag>
             </el-descriptions-item>
-          </el-descriptions>
+          </el-descriptions>        
         </el-card>
       </div>
+      <div style="clear: both"></div>
+      <el-pagination
+        layout="prev, pager, next"
+        :total="application.totalCount"
+        :page-size="queryApplicationCondition.pageSize"
+        v-model:current-page="queryApplicationCondition.pageIndex"
+        :hide-on-single-page="true"
+        @current-change="loadApplications">
+      </el-pagination>  
     </el-card>
     <el-card class="box-card">
       <div>
@@ -160,7 +169,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useApplicationStoreHook } from "/@/store/modules/applications";
 import { HttpMethod } from "/@/utils/enums/HttpMethod";
 import { useRouter } from "vue-router";
@@ -168,7 +177,7 @@ export default {
   name: "Application",
   setup() {
     const applicationsStore = useApplicationStoreHook();
-    let applications = ref([]);
+    let application = ref({});
     let activeName = ref("first");
     let applicationInstances = ref({});
     let applicationDetail = ref({});
@@ -177,7 +186,10 @@ export default {
       pageIndex: 1,
       pageSize: 10
     });
-
+    let queryApplicationCondition = ref({
+      pageIndex: 1,
+      pageSize: 5
+    });
     let appServiceEntries = ref({
       data: [],
       totalCount: 0,
@@ -192,20 +204,17 @@ export default {
     let router = useRouter();
 
     const loadApplications = () => {
-      applicationsStore.getApplications().then(data => {
-        applications.value = data;
-        selectedAppName.value = data[0].hostName;
-        getApplicationInstaces(
-          selectedAppName.value,
-          queryInstanceCondition.value
-        );
+      applicationsStore.getApplications(queryApplicationCondition.value).then(data => {
+        application.value = data;
+        selectedAppName.value = data['items'][0].hostName;
+        getApplicationInstaces();
         getApplicationDetail(selectedAppName.value);
       });
     };
 
-    const getApplicationInstaces = (appName, queryInstanceCondition) => {
+    const getApplicationInstaces = () => {
       applicationsStore
-        .getApplicationInstances(appName, queryInstanceCondition)
+        .getApplicationInstances(selectedAppName.value, queryInstanceCondition.value)
         .then(data => {
           applicationInstances.value = data;
         });
@@ -218,13 +227,10 @@ export default {
         getAppServiceEntries();
       });
     };
-    loadApplications();
+   
     const handleSelectApplication = applicationInfo => {
       selectedAppName.value = applicationInfo.hostName;
-      getApplicationInstaces(
-        selectedAppName.value,
-        queryInstanceCondition.value
-      );
+      getApplicationInstaces();
       getApplicationDetail(selectedAppName.value);
     };
 
@@ -287,14 +293,18 @@ export default {
       });
     };
 
+    onMounted(() => {
+      loadApplications();
+    });
     const handleClick = (tab, event) => {};
 
     return {
-      applications,
+      application,
       applicationInstances,
       activeName,
       applicationDetail,
       queryInstanceCondition,
+      queryApplicationCondition,
       appServiceEntries,
       wsServices,
       selectedAppName,
@@ -304,7 +314,8 @@ export default {
       getAppServiceEntries,
       handleSelectedInstance,
       handleSelectServiceEntry,
-      handleClick
+      handleClick,
+      
     };
   }
 };
@@ -337,4 +348,5 @@ export default {
   margin: 10px;
   cursor: pointer;
 }
+
 </style>
