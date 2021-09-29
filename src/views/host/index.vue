@@ -4,16 +4,16 @@
       <template #header>
         <span>微服务列表</span>
       </template>
-      <div class="application-container">
+      <div class="host-container">
         <el-card
           shadow="always"
           class="grid-content box-card-item"
-          v-for="(item, index) in application.items"
+          v-for="(item, index) in host.items"
           :key="index"
-          @click="handleSelectApplication(item)"
+          @click="handleSelectHost(item)"
         >
           <template #header>
-            {{ item.hostName }}
+            {{ item.host }}
           </template>
           <el-descriptions :column="1">
             <el-descriptions-item label="应用实例">{{
@@ -23,7 +23,7 @@
               item.appServiceCount
             }}</el-descriptions-item>
             <el-descriptions-item label="服务条目">{{
-              item.serviceEntriesCount
+              item.localServiceEntriesCount
             }}</el-descriptions-item>
             <el-descriptions-item label="是否支持WebSocket">
               <el-tag :type="item.hasWsService ? 'success' : 'danger'">
@@ -36,18 +36,18 @@
       <div style="clear: both"></div>
       <el-pagination
         layout="prev, pager, next"
-        :total="application.totalCount"
-        :page-size="queryApplicationCondition.pageSize"
-        v-model:current-page="queryApplicationCondition.pageIndex"
+        :total="host.totalCount"
+        :page-size="queryHostCondition.pageSize"
+        v-model:current-page="queryHostCondition.pageIndex"
         :hide-on-single-page="true"
-        @current-change="loadApplications">
+        @current-change="loadHosts">
       </el-pagination>  
     </el-card>
     <el-card class="box-card">
       <div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="微服务实例" name="first">
-            <el-table :data="applicationInstances.items">
+            <el-table :data="hostInstances.items">
               <el-table-column
                 label="应用名称"
                 prop="hostName"
@@ -77,18 +77,18 @@
             </el-table>
             <el-pagination
               layout="prev, pager, next"
-              :total="applicationInstances.totalCount"
+              :total="hostInstances.totalCount"
               :page-size="queryInstanceCondition.pageSize"
               v-model:current-page="queryInstanceCondition.pageIndex"
               :hide-on-single-page="true"
-              @current-change="getApplicationInstaces"
+              @current-change="getHostInstaces"
             >
             </el-pagination>
           </el-tab-pane>
           <el-tab-pane label="服务详情" name="second">
             <el-card>
               <template #header>
-                <span>{{ selectedAppName }} 应用服务</span>
+                <span>{{ selectedHostName }} 应用服务</span>
               </template>
               <el-table
                 :data="appServiceEntries.data"
@@ -148,7 +148,7 @@
             </el-card>
             <el-card v-if="wsServices.length > 0">
               <template #header>
-                <span>{{ selectedAppName }} WebSocket服务</span>
+                <span>{{ selectedHostName }} WebSocket服务</span>
               </template>
               <el-table :data="wsServices">
                 <el-table-column
@@ -170,23 +170,23 @@
 
 <script lang="ts">
 import { ref, onMounted } from "vue";
-import { useApplicationStoreHook } from "/@/store/modules/applications";
+import { useHostStoreHook } from "/@/store/modules/host";
 import { HttpMethod } from "/@/utils/enums/HttpMethod";
 import { useRouter } from "vue-router";
 export default {
-  name: "Application",
+  name: "Host",
   setup() {
-    const applicationsStore = useApplicationStoreHook();
-    let application = ref({});
+    const hostsStore = useHostStoreHook();
+    let host = ref({});
     let activeName = ref("first");
-    let applicationInstances = ref({});
-    let applicationDetail = ref({});
-    let selectedAppName = ref("");
+    let hostInstances = ref({});
+    let hostDetail = ref({});
+    let selectedHostName = ref("");
     let queryInstanceCondition = ref({
       pageIndex: 1,
       pageSize: 10
     });
-    let queryApplicationCondition = ref({
+    let queryHostCondition = ref({
       pageIndex: 1,
       pageSize: 5
     });
@@ -203,35 +203,35 @@ export default {
 
     let router = useRouter();
 
-    const loadApplications = () => {
-      applicationsStore.getApplications(queryApplicationCondition.value).then(data => {
-        application.value = data;
-        selectedAppName.value = data['items'][0].hostName;
-        getApplicationInstaces();
-        getApplicationDetail(selectedAppName.value);
+    const loadHosts = () => {
+      hostsStore.getHosts(queryHostCondition.value).then(data => {
+        host.value = data;
+        selectedHostName.value = data['items'][0].host;
+        getHostInstaces();
+        getHostDetail(selectedHostName.value);
       });
     };
 
-    const getApplicationInstaces = () => {
-      applicationsStore
-        .getApplicationInstances(selectedAppName.value, queryInstanceCondition.value)
+    const getHostInstaces = () => {
+      hostsStore
+        .getHostInstances(selectedHostName.value, queryInstanceCondition.value)
         .then(data => {
-          applicationInstances.value = data;
+          hostInstances.value = data;
         });
     };
-    const getApplicationDetail = appName => {
-      applicationsStore.getApplicationDetail(appName).then(data => {
-        applicationDetail.value = data;
+    const getHostDetail = host => {
+      hostsStore.getHostDetail(host).then(data => {
+        hostDetail.value = data;
         allServiceEntries = data["appServiceEntries"];
         wsServices.value = data["wsServices"];
         getAppServiceEntries();
       });
     };
    
-    const handleSelectApplication = applicationInfo => {
-      selectedAppName.value = applicationInfo.hostName;
-      getApplicationInstaces();
-      getApplicationDetail(selectedAppName.value);
+    const handleSelectHost = hostInfo => {
+      selectedHostName.value = hostInfo.hostName;
+      getHostInstaces();
+      getHostDetail(selectedHostName.value);
     };
 
     const getAppServiceEntries = () => {
@@ -294,23 +294,23 @@ export default {
     };
 
     onMounted(() => {
-      loadApplications();
+      loadHosts();
     });
     const handleClick = (tab, event) => {};
 
     return {
-      application,
-      applicationInstances,
+      host,
+      hostInstances,
       activeName,
-      applicationDetail,
+      hostDetail,
       queryInstanceCondition,
-      queryApplicationCondition,
+      queryHostCondition,
       appServiceEntries,
       wsServices,
-      selectedAppName,
+      selectedHostName,
       objectSpanMethod,
       displayHttpMethod,
-      handleSelectApplication,
+      handleSelectHost,
       getAppServiceEntries,
       handleSelectedInstance,
       handleSelectServiceEntry,

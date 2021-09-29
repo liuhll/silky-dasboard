@@ -1,24 +1,24 @@
 import Layout from "/@/layout/index.vue";
 
 const hostRouter = {
-  path: "/application",
-  name: "application",
+  path: "/host",
+  name: "host",
   component: Layout,
-  redirect: "/application/index",
+  redirect: "/host/index",
   meta: {
     icon: "el-icon-set-up",
-    title: "message.hsapplicationlist",
+    title: "message.hshost",
     showLink: true,
     savedPosition: true,
     rank: 1
   },
   children: [
     {
-      path: "/application/index",
-      name: "application",
-      component: () => import("/@/views/application/index.vue"),
+      path: "/host/index",
+      name: "host",
+      component: () => import("/@/views/host/index.vue"),
       meta: {
-        title: "message.hsapplicationlist",
+        title: "message.hshost",
         showLink: true,
         savedPosition: true
       }

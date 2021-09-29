@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getApplications, getApplicationDetail, getApplicationInstances, getInstanceDetail, getInstanceServiceHandle, getInstanceServiceInvoke } from "/@/api/application";
+import { getHosts, getHostDetail, getHostInstances, getInstanceDetail, getInstanceServiceHandle, getInstanceServiceInvoke } from "../../api/host";
 
 export const applicationStore = defineStore({
   id: "pure-application",
   actions: {
-    getApplications() {
+    getHosts() {
       return new Promise((resolve, reject) => {
-        getApplications().then(response => {
+        getHosts().then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
@@ -15,9 +15,9 @@ export const applicationStore = defineStore({
         })
       })
     },
-    getApplicationInstances(appName, queryInstanceCondition) {
+    getHostInstances(appName, queryInstanceCondition) {
       return new Promise((resolve, reject) => {
-        getApplicationInstances(appName, queryInstanceCondition).then(response => {
+        getHostInstances(appName, queryInstanceCondition).then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
@@ -25,9 +25,9 @@ export const applicationStore = defineStore({
         })
       })
     },
-    getApplicationDetail(appName) {
+    getHostDetail(appName) {
       return new Promise((resolve, reject) => {
-        getApplicationDetail(appName).then(response => {
+        getHostDetail(appName).then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
@@ -68,6 +68,6 @@ export const applicationStore = defineStore({
   }
 });
 
-export function useApplicationStoreHook() {
+export function useHostStoreHook() {
   return applicationStore(store);
 }

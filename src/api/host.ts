@@ -1,15 +1,15 @@
 import { http } from "../utils/http";
 
-export const getApplications = () => {
-  return http.request("get", "/api/silky/applications");
+export const getHosts = () => {
+  return http.request("get", "/api/silky/hosts");
 };
 
-export const getApplicationDetail = (appName) => {
-  return http.request("get", `/api/silky/application/${appName}/detail`)
+export const getHostDetail = (hostName) => {
+  return http.request("get", `/api/silky/host/${hostName}/detail`)
 }
 
-export const getApplicationInstances = (appName, queryInstanceCondition) => {
-  return http.request("get", `/api/silky/application/${appName}/instances`, queryInstanceCondition)
+export const getHostInstances = (hostName, queryInstanceCondition) => {
+  return http.request("get", `/api/silky/host/${hostName}/instances`, queryInstanceCondition)
 }
 
 export const getInstanceDetail = (address) => {

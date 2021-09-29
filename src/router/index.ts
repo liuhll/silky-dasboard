@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, Router } from "vue-router";
 
 import homeRouter from "./modules/home";
-import applicationRouter from "./modules/application";
+import applicationRouter from "./modules/host";
 import gatewayRouter from "./modules/gateway";
 import serviceRouter from "./modules/service";
 import registryCenterRouter from "./modules/registrycenter";
