@@ -8,7 +8,7 @@
       <el-card class="box-card-item" v-for="(item,index) in registryCenters" :key="index">
          <el-descriptions size="medium" :column="1" border>
            <el-descriptions-item label="类型">
-             <el-tag type="success">{{displayRegisterCenterType(item.registryCenterType)}}</el-tag>
+             <el-tag type="success">{{item.registryCenterType}}</el-tag>
            </el-descriptions-item>
            <el-descriptions-item label="服务注册中心地址">{{item.registryCenterAddress}}</el-descriptions-item>
            <el-descriptions-item label="是否健康">

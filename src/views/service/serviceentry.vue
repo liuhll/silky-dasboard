@@ -79,7 +79,7 @@
       <el-descriptions-item label="熔断前允许的异常次数:">{{governanceOptions.exceptionsAllowedBeforeBreaking}}</el-descriptions-item>
       <el-descriptions-item label="熔断休眠时长:">{{governanceOptions.breakerSeconds}}s</el-descriptions-item>
       <el-descriptions-item label="移除实例前允许不健康次数:">{{governanceOptions.unHealthAddressTimesAllowedBeforeRemoving}}次</el-descriptions-item>
-      <el-descriptions-item label="不健康实例休眠时间:">{{governanceOptions.addressFuseSleepDurationSeconds}}s</el-descriptions-item>
+      <el-descriptions-item label="不健康实例休眠时长:">{{governanceOptions.addressFuseSleepDurationSeconds}}s</el-descriptions-item>
       <el-descriptions-item label="是否支持回退:">{{ (serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0) ? "支持": "不支持"}}</el-descriptions-item>
       <el-descriptions-item v-if="(serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0)" label="回退方法信息">
         <sapn v-for="(fallback,index) in serviceEntry.fallbacks" :key="index">
