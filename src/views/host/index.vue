@@ -124,7 +124,7 @@
                 ></el-table-column>
                 <el-table-column label="AllowAnonymous"  width="100">
                   <template #default="scope">
-                    <el-tag :type="scope.row.isAllowAnonymous ? 'danger' : 'success'">
+                    <el-tag :type="scope.row.isAllowAnonymous ? 'success' : 'danger'">
                       {{ scope.row.isAllowAnonymous ? "是" : "否" }}
                     </el-tag>
                   </template>

@@ -15,11 +15,6 @@
           {{ instanceStatus.isHealth === "true" ? "健康" : "不健康" }}
         </el-tag>
       </el-descriptions-item>
-      <el-descriptions-item label="是否在线">
-        <el-tag :type="instanceStatus.isEnable === 'true' ? 'success' : 'danger'">
-          {{ instanceStatus.isEnable === "true" ? "在线" : "离线" }}
-        </el-tag>
-      </el-descriptions-item>
     </el-descriptions>
     <el-tabs v-model="activeName">
       <el-tab-pane label="服务执行信息" name="first">

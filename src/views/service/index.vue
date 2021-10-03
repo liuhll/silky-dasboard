@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row class="search-place">
-      <el-col :span="4">
+      <el-col :span="3">
         <el-select
           v-model="searchServiceEntriesCondition.hostName"
           @change="handleChangeHost"
@@ -16,11 +16,12 @@
           ></el-option>
         </el-select>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="3">
         <el-select
           v-model="searchServiceEntriesCondition.serviceId"
           clearable
           placeholder="请选择应用服务"
+          @change="loadServiceEntries"
         >
           <el-option
             v-for="(item, index) in appServices"
@@ -30,17 +31,68 @@
           ></el-option>
         </el-select>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="3">
+        <el-select
+          v-model="searchServiceEntriesCondition.isSystem"
+          clearable
+          placeholder="系统服务"
+          @change="loadServiceEntries"
+        >
+          <el-option label="是" :value="true"> </el-option>
+          <el-option label="否" :value="false"> </el-option>
+        </el-select>
+      </el-col>      
+      <el-col :span="3">
+        <el-select
+          v-model="searchServiceEntriesCondition.isEnable"
+          clearable
+          placeholder="是否可用"
+          @change="loadServiceEntries"
+        >
+          <el-option label="是" :value="true"> </el-option>
+          <el-option label="否" :value="false"> </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="3">
+        <el-select
+          v-model="searchServiceEntriesCondition.isAllowAnonymous"
+          clearable
+          placeholder="是否需要认证"
+          @change="loadServiceEntries"
+        >
+          <el-option label="是" :value="true"> </el-option>
+          <el-option label="否" :value="false"> </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="3">
+        <el-select
+          v-model="searchServiceEntriesCondition.prohibitExtranet"
+          clearable
+          placeholder="禁用外网"
+          @change="loadServiceEntries"
+        >
+          <el-option label="是" :value="true"> </el-option>
+          <el-option label="否" :value="false"> </el-option>
+        </el-select>
+      </el-col>      
+      <el-col :span="3">
+        <el-select
+          v-model="searchServiceEntriesCondition.isDistributeTransaction"
+          clearable
+          placeholder="分布式事务"
+          @change="loadServiceEntries"
+        >
+          <el-option label="是" :value="true"> </el-option>
+          <el-option label="否" :value="false"> </el-option>
+        </el-select>
+      </el-col>      
+      <el-col :span="3">
         <el-input
-          placeholder="请输入服务或是服务条目名称"
-          v-model="searchServiceEntriesCondition.name"
+          placeholder="关键字"
+          v-model="searchServiceEntriesCondition.searchKey"
+          @input="loadServiceEntries"
           clearable
         ></el-input>
-      </el-col>
-      <el-col :span="4">
-        <el-button type="success" class="btn-search" @click="loadServiceEntries"
-          >搜索</el-button
-        >
       </el-col>
     </el-row>
     <el-table
@@ -58,11 +110,11 @@
         prop="serviceName"
         width="320"
       ></el-table-column>
-      <el-table-column
-        label="服务条目"
-        width="460">
+      <el-table-column label="服务条目" width="460">
         <template #default="scope">
-          <el-button type="text" @click="handleSelectServiceEntry(scope.row)">{{scope.row.serviceEntryId}}</el-button>
+          <el-button type="text" @click="handleSelectServiceEntry(scope.row)">{{
+            scope.row.serviceEntryId
+          }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="是否可用">
@@ -94,6 +146,13 @@
           <el-tag v-if="scope.row.httpMethod != null" type="success">
             {{ displayHttpMethod(scope.row.httpMethod) }}</el-tag
           >
+        </template>
+      </el-table-column>
+      <el-table-column label="AllowAnonymous" width="100">
+        <template #default="scope">
+         <el-tag :type="scope.row.isAllowAnonymous ? 'success' : 'danger'">
+            {{ scope.row.isAllowAnonymous ? "是" : "否" }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="多个服务实现" prop="multipleServiceKey">
@@ -148,7 +207,7 @@ export default {
       hostName: null,
       serviceName: null,
       serviceEntryId: null,
-      name: null,
+      searchKey: null,
       pageIndex: 1,
       pageSize: 10
     });
@@ -192,10 +251,15 @@ export default {
       loadAppServices();
       searchServiceEntriesCondition.value.appService = null;
       appServices.value = [];
+      loadServiceEntries();
+      
     };
 
-    const handleSelectServiceEntry = (row) => {
-      router.push( { name: 'serviceentry', query: { serviceEntryId: row.serviceEntryId }});
+    const handleSelectServiceEntry = row => {
+      router.push({
+        name: "serviceentry",
+        query: { serviceEntryId: row.serviceEntryId }
+      });
     };
 
     const flitterData = (data: any[]) => {

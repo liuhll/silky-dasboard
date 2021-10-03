@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getGeteway, getGatewayInstances } from "/@/api/gateway";
+import { getGeteway, getGatewayInstances, getGatewayServiceEntries, getGatewayServices} from "/@/api/gateway";
 
 export const gatewayStore = defineStore({
   id: "pure-gateway",
@@ -24,7 +24,27 @@ export const gatewayStore = defineStore({
           reject(err)
         })
       })
-    }
+    },
+    getGatewayServiceEntries(condition) {
+      return new Promise((resolve, reject) => {
+        getGatewayServiceEntries(condition).then(response => {
+          const { data } = response
+          resolve(data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getGatewayServices() {
+      return new Promise((resolve, reject) => {
+        getGatewayServices().then(response => {
+          const { data } = response
+          resolve(data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    }    
   }
 });
 
