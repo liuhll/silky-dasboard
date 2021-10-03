@@ -6,7 +6,7 @@ const registryCenterRouter = {
   component: Layout,
   redirect: "/registrycenter/index",
   meta: {
-    icon: "el-icon-set-up",
+    icon: "iconfont icon-fuwuzhuce",
     title: "message.hsregistrycenter",
     showLink: true,
     savedPosition: true,

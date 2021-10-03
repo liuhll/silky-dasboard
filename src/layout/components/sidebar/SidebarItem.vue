@@ -12,7 +12,7 @@
           :index="resolvePath(onlyOneChild.path)"
           :class="{ 'submenu-title-noDropdown': !isNest }"
         >
-          <i :class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
+          <i :class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" class="icon-item" />
           <template #title>
             <span>{{ $t(onlyOneChild.meta.title) }}</span>
           </template>
@@ -114,3 +114,14 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss"  scoped>
+.icon-item {
+  color: var(--el-text-color-secondary)!important;
+  margin-right: 8px !important;
+  width: 24px !important;
+  text-align: center !important;
+  font-size: 20px !important;
+  vertical-align: middle !important;
+}
+</style>

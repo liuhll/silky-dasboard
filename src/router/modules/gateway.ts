@@ -6,7 +6,7 @@ const hostRouter = {
   component: Layout,
   redirect: "/gateway/index",
   meta: {
-    icon: "el-icon-set-up",
+    icon: "iconfont icon-NATwangguan",
     title: "message.hsgateway",
     showLink: true,
     savedPosition: true,

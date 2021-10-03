@@ -18,8 +18,8 @@
         class="sidebar-logo-link"
         to="/"
       >
-        <!-- <i class="fa fa-optin-monster"></i> -->
-        <h1 class="sidebar-title">{{ settings.title }}</h1>
+        <i class="iconfont icon-logo icon-logo-monster"></i>
+        <!-- <h1 class="sidebar-title">{{ settings.title }}</h1> -->
       </router-link>
     </transition>
   </div>
@@ -64,10 +64,10 @@ export default defineComponent({
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
     }
 
-    .fa-optin-monster {
-      font-size: 30px;
+    .icon-logo-monster {
+      font-size: 60px;
       color: #1890ff;
-      margin-top: 5px;
+      margin-top: 10px;
     }
   }
 

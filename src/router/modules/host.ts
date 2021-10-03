@@ -6,7 +6,7 @@ const hostRouter = {
   component: Layout,
   redirect: "/host/index",
   meta: {
-    icon: "el-icon-set-up",
+    icon: "iconfont icon-xingzhuang",
     title: "message.hshost",
     showLink: true,
     savedPosition: true,

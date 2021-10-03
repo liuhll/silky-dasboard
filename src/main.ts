@@ -12,7 +12,11 @@ import "./style/index.scss";
 // 导入字体图标
 import "./assets/iconfont/iconfont.js";
 import "./assets/iconfont/iconfont.css";
+import "./assets/silkyicon/iconfont.js";
+import "./assets/silkyicon/iconfont.css";
+
 import "animate.css";
+
 
 import "v-contextmenu/dist/themes/default.css";
 

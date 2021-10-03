@@ -42,7 +42,7 @@ export const menusConfig = {
       permissionPage: "页面权限",
       permissionButton: "按钮权限",
       externalLink: "外链",
-      hshost: "主机",
+      hshost: "应用",
       hsgateway: "网关",
       hsservice: "服务",
       hsregistrycenter: "注册中心",

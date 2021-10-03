@@ -6,7 +6,7 @@ const serviceRouter = {
   component: Layout,
   redirect: "/service/index",
   meta: {
-    icon: "el-icon-set-up",
+    icon: "iconfont icon-yingyongfuwu",
     title: "message.hsservice",
     showLink: true,
     savedPosition: true,
