@@ -3,13 +3,13 @@
     <el-row class="search-place">
       <el-col :span="4">
         <el-select
-          v-model="searchServiceEntriesCondition.application"
-          @change="handleChangeApplication"
+          v-model="searchServiceEntriesCondition.hostName"
+          @change="handleChangeHost"
           clearable
-          placeholder="请选择应用"
+          placeholder="请选择微服务应用"
         >
           <el-option
-            v-for="(item, index) in applications"
+            v-for="(item, index) in hosts"
             :key="index"
             :label="item.hostName"
             :value="item.hostName"
@@ -18,15 +18,15 @@
       </el-col>
       <el-col :span="4">
         <el-select
-          v-model="searchServiceEntriesCondition.appService"
+          v-model="searchServiceEntriesCondition.serviceId"
           clearable
-          placeholder="请选择服务"
+          placeholder="请选择应用服务"
         >
           <el-option
             v-for="(item, index) in appServices"
             :key="index"
-            :label="item.appService"
-            :value="item.appService"
+            :label="item.serviceName"
+            :value="item.serviceId"
           ></el-option>
         </el-select>
       </el-col>
@@ -49,21 +49,20 @@
       :span-method="objectSpanMethods"
     >
       <el-table-column
-        label="应用"
-        prop="application"
+        label="微服务应用"
+        prop="hostName"
         width="200"
       ></el-table-column>
       <el-table-column
         label="服务"
-        prop="appService"
+        prop="serviceName"
         width="320"
       ></el-table-column>
       <el-table-column
         label="服务条目"
-        width="460"
-      >
+        width="460">
         <template #default="scope">
-          <el-button type="text" @click="handleSelectServiceEntry(scope.row)">{{scope.row.serviceId}}</el-button>
+          <el-button type="text" @click="handleSelectServiceEntry(scope.row)">{{scope.row.serviceEntryId}}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="是否可用">
@@ -75,7 +74,7 @@
       </el-table-column>
       <el-table-column
         label="实例数"
-        prop="serviceRouteCount"
+        prop="serverInstanceCount"
       ></el-table-column>
       <el-table-column label="方法" prop="method" width="100"></el-table-column>
       <el-table-column label="禁用外网">
@@ -129,40 +128,43 @@
 
 <script lang="ts">
 import { ref, onMounted } from "vue";
-import { useApplicationStoreHook } from "/@/store/modules/applications";
+import { useHostStoreHook } from "/@/store/modules/host";
 import { useServiceStoreHook } from "/@/store/modules/service";
+import { useServiceEntryStoreHook } from "/@/store/modules/serviceentry";
 import { HttpMethod } from "/@/utils/enums/HttpMethod";
 import { useRouter } from "vue-router";
 export default {
   name: "Service",
   setup() {
-    const applicationStore = useApplicationStoreHook();
+    const hostStore = useHostStoreHook();
     const serviceStore = useServiceStoreHook();
+    const serviceEntryStore = useServiceEntryStoreHook();
     const router = useRouter();
 
-    let applications = ref([]);
+    let hosts = ref([]);
     let appServices = ref([]);
     let serviceEntries = ref([]);
     let searchServiceEntriesCondition = ref({
-      application: null,
-      appService: null,
+      hostName: null,
+      serviceName: null,
+      serviceEntryId: null,
       name: null,
       pageIndex: 1,
       pageSize: 10
     });
 
-    let spanApplicationArr = [];
+    let spanHostArr = [];
     let spanServiceArr = [];
 
-    const loadApplications = () => {
-      applicationStore.getApplications().then(data => {
-        applications.value = data;
+    const loadHosts = () => {
+      hostStore.getAllHosts().then(data => {
+        hosts.value = data;
       });
     };
     const loadAppServices = () => {
       serviceStore
         .getServices({
-          appName: searchServiceEntriesCondition.value.application
+          hostName: searchServiceEntriesCondition.value.hostName
         })
         .then(data => {
           appServices.value = data;
@@ -170,7 +172,7 @@ export default {
     };
 
     const loadServiceEntries = () => {
-      serviceStore
+      serviceEntryStore
         .getServiceEntries(searchServiceEntriesCondition.value)
         .then(data => {
           serviceEntries.value = data;
@@ -181,43 +183,43 @@ export default {
       return HttpMethod[httpMethod];
     };
     onMounted(() => {
-      loadApplications();
+      loadHosts();
       loadAppServices();
       loadServiceEntries();
     });
 
-    const handleChangeApplication = () => {
+    const handleChangeHost = () => {
       loadAppServices();
       searchServiceEntriesCondition.value.appService = null;
       appServices.value = [];
     };
 
     const handleSelectServiceEntry = (row) => {
-      router.push( { name: 'serviceentry', query: { serviceEntryId: row.serviceId }});
+      router.push( { name: 'serviceentry', query: { serviceEntryId: row.serviceEntryId }});
     };
 
     const flitterData = (data: any[]) => {
-      spanApplicationArr = [];
+      spanHostArr = [];
       spanServiceArr = [];
       let pos1 = 0;
       let pos2 = 0;
       for (let i = 0; i < data.length; i++) {
         if (i === 0) {
-          spanApplicationArr.push(1);
+          spanHostArr.push(1);
           spanServiceArr.push(1);
           pos1 = 0;
           pos2 = 0;
         } else {
           // 判断当前元素与上一个元素是否相同
-          if (data[i].application === data[i - 1].application) {
-            spanApplicationArr[pos1] += 1;
-            spanApplicationArr.push(0);
+          if (data[i].hostName === data[i - 1].hostName) {
+            spanHostArr[pos1] += 1;
+            spanHostArr.push(0);
           } else {
-            spanApplicationArr.push(1);
+            spanHostArr.push(1);
             pos1 = i;
           }
 
-          if (data[i].appService === data[i - 1].appService) {
+          if (data[i].serviceName === data[i - 1].serviceName) {
             spanServiceArr[pos2] += 1;
             spanServiceArr.push(0);
           } else {
@@ -230,7 +232,7 @@ export default {
 
     const objectSpanMethods = ({ row, column, rowIndex, columnIndex }) => {
       if (columnIndex == 0) {
-        const _row = spanApplicationArr[rowIndex];
+        const _row = spanHostArr[rowIndex];
         const _col = _row > 0 ? 1 : 0;
         return {
           rowspan: _row,
@@ -248,11 +250,11 @@ export default {
     };
 
     return {
-      applications,
+      hosts,
       searchServiceEntriesCondition,
       appServices,
       serviceEntries,
-      handleChangeApplication,
+      handleChangeHost,
       loadServiceEntries,
       displayHttpMethod,
       objectSpanMethods,

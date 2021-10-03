@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getServices, getServiceEntries, getServiceEntryDetail, getServiceEntryRoutes } from "/@/api/service";
+import { getServices, getWsServices } from "/@/api/service";
 
 export const serviceStore = defineStore({
   id: "pure-service",
   actions: {
-    getServices(condition) {
+    getServices(conditions) {
       return new Promise((resolve, reject) => {
-        getServices(condition).then(response => {
+        getServices(conditions).then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
@@ -15,35 +15,15 @@ export const serviceStore = defineStore({
         })
       })
     },
-    getServiceEntries(condition) {
+    getWsServices(hostName, conditions) {
       return new Promise((resolve, reject) => {
-        getServiceEntries(condition).then(response => {
+        getWsServices(hostName,conditions).then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
           reject(err)
         })
-      })
-    },
-    getServiceEntryDetail(serviceId) {
-      return new Promise((resolve, reject) => {
-        getServiceEntryDetail(serviceId).then(response => {
-          const { data } = response
-          resolve(data)
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    },
-    getServiceEntryRoutes(serviceId, conditions) {
-      return new Promise((resolve, reject) => {
-        getServiceEntryRoutes(serviceId, conditions).then(response => {
-          const { data } = response
-          resolve(data)
-        }).catch(err => {
-          reject(err)
-        })
-      })
+      })      
     }
   }
 });

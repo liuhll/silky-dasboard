@@ -1,8 +1,12 @@
 import { http } from "../utils/http";
 
-export const getHosts = () => {
-  return http.request("get", "/api/silky/hosts");
-};
+export const getHosts = (conditions) => {
+  return http.request("get", "/api/silky/hosts",conditions);
+}
+
+export const getAllHosts = () => {
+  return http.request("get", "/api/silky/allhosts");
+}
 
 export const getHostDetail = (hostName) => {
   return http.request("get", `/api/silky/host/${hostName}/detail`)

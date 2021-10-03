@@ -35,6 +35,12 @@ class EnclosureHttp {
         storageSession.removeItem('info');
         router.push("/login");
       }
+    },
+    beforeRequestCallback: (request) => {
+      let loginUserInfo = storageSession.getItem("info");
+      if (loginUserInfo && loginUserInfo.accessToken) {
+        request.headers.Authorization = loginUserInfo.accessToken;
+      }
     }
   };
 

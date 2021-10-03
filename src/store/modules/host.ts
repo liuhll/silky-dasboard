@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getHosts, getHostDetail, getHostInstances, getInstanceDetail, getInstanceServiceHandle, getInstanceServiceInvoke } from "../../api/host";
+import { getHosts, getAllHosts, getHostDetail, getHostInstances, getInstanceDetail, getInstanceServiceHandle, getInstanceServiceInvoke } from "../../api/host";
 
 export const applicationStore = defineStore({
   id: "pure-application",
   actions: {
-    getHosts() {
+    getHosts(conditions) {
       return new Promise((resolve, reject) => {
-        getHosts().then(response => {
+        getHosts(conditions).then(response => {
           const { data } = response
           resolve(data)
         }).catch(err => {
@@ -15,6 +15,16 @@ export const applicationStore = defineStore({
         })
       })
     },
+    getAllHosts() {
+      return new Promise((resolve, reject) => {
+        getAllHosts().then(response => {
+          const { data } = response
+          resolve(data)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },    
     getHostInstances(appName, queryInstanceCondition) {
       return new Promise((resolve, reject) => {
         getHostInstances(appName, queryInstanceCondition).then(response => {

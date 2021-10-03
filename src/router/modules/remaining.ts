@@ -22,19 +22,19 @@ const remainingRouter = [
     }
   },
   {
-    path: "/application/instance",
+    path: "/host/instance",
     component: Layout,
-    redirect: "/application/instance",
+    redirect: "/host/instance",
     meta: {
-      title: "message.hsapplicationlist",
+      title: "message.hsinstance",
       showLink: false,
       rank: 103
     },
     children:[
       {
-        path: "/application/instance",
+        path: "/host/instance",
         name: "instance",
-        component: () => import("/@/views/application/instance.vue"),
+        component: () => import("/@/views/host/instance.vue"),
         meta: {
           title: "message.hsinstance",
           showLink: false,

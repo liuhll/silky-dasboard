@@ -6,31 +6,30 @@
       </template>
       <div class="host-container">
         <el-card
-          shadow="always"
           class="grid-content box-card-item"
+          :class="item.hostName == selectedHostName ? boxcardclass:''"
           v-for="(item, index) in host.items"
           :key="index"
-          @click="handleSelectHost(item)"
-        >
+          @click="handleSelectHost(item)">
           <template #header>
-            {{ item.host }}
+            {{ item.hostName }}
           </template>
           <el-descriptions :column="1">
-            <el-descriptions-item label="应用实例">{{
+            <el-descriptions-item label="实例数">{{
               item.instanceCount
             }}</el-descriptions-item>
             <el-descriptions-item label="应用服务">{{
               item.appServiceCount
             }}</el-descriptions-item>
             <el-descriptions-item label="服务条目">{{
-              item.localServiceEntriesCount
+              item.serviceEntriesCount
             }}</el-descriptions-item>
-            <el-descriptions-item label="是否支持WebSocket">
-              <el-tag :type="item.hasWsService ? 'success' : 'danger'">
-                {{ item.hasWsService ? "支持" : "不支持" }}
+            <el-descriptions-item label="服务协议">
+              <el-tag v-for="(serviceProtocol,index) in item.serviceProtocols" :key="index" type="success">
+                {{ displayServiceProtocol(serviceProtocol) }}
               </el-tag>
             </el-descriptions-item>
-          </el-descriptions>        
+          </el-descriptions>     
         </el-card>
       </div>
       <div style="clear: both"></div>
@@ -54,11 +53,22 @@
               ></el-table-column>
               <el-table-column label="地址">
                 <template #default="scope">
-                  <el-button
+                  <el-button v-if="scope.row.serviceProtocol != 2"
                     type="text"
                     @click="handleSelectedInstance(scope.row)">
                     {{ scope.row.address }}</el-button>
+                  <span v-if="scope.row.serviceProtocol == 2"
+                    type="text">
+                    {{ scope.row.address }}</span>
                 </template>
+              </el-table-column>
+              <el-table-column
+                label="服务协议">             
+                <template #default="scope">
+                  <el-tag type="success">
+                    {{ displayServiceProtocol(scope.row.serviceProtocol) }}
+                  </el-tag>
+                </template>                
               </el-table-column>
               <el-table-column label="健康状态">
                 <template #default="scope">
@@ -91,47 +101,51 @@
                 <span>{{ selectedHostName }} 应用服务</span>
               </template>
               <el-table
-                :data="appServiceEntries.data"
-                :span-method="objectSpanMethod"
-              >
+                :data="appServiceEntries.items"
+                :span-method="objectSpanMethod">             
                 <el-table-column
                   label="服务"
-                  prop="appService"
-                  width="320"
-                ></el-table-column>
-                <el-table-column label="服务条目Id" width="450">
+                  prop="serviceName"
+                  width="200">
+                </el-table-column>
+                <el-table-column label="服务条目" width="450">
                   <template #default="scope">
                     <el-button
                       type="text"
                       @click="handleSelectServiceEntry(scope.row)"
-                      >{{ scope.row.serviceId }}</el-button
+                      >{{ scope.row.serviceEntryId }}</el-button
                     >
                   </template>
                 </el-table-column>
                 <el-table-column
                   label="方法"
                   prop="method"
-                  width="100"
+                  width="200"
                 ></el-table-column>
+                <el-table-column label="AllowAnonymous"  width="100">
+                  <template #default="scope">
+                    <el-tag :type="scope.row.isAllowAnonymous ? 'danger' : 'success'">
+                      {{ scope.row.isAllowAnonymous ? "是" : "否" }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
                 <el-table-column label="禁用外网">
                   <template #default="scope">
                     <el-tag
-                      :type="scope.row.prohibitExtranet ? 'danger' : 'success'"
-                    >
+                      :type="scope.row.prohibitExtranet ? 'danger' : 'success'">
                       {{ scope.row.prohibitExtranet ? "是" : "否" }}
                     </el-tag>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="webapi"
+                  label="webApi"
                   prop="webApi"
-                  width="200"
+                  width="300"
                 ></el-table-column>
                 <el-table-column label="http请求方法">
                   <template #default="scope">
                     <el-tag v-if="scope.row.httpMethod != null" type="success">
-                      {{ displayHttpMethod(scope.row.httpMethod) }}</el-tag
-                    >
+                      {{ displayHttpMethod(scope.row.httpMethod) }}</el-tag>
                   </template>
                 </el-table-column>
                 <el-table-column label="开发者" prop="author"></el-table-column>
@@ -139,28 +153,32 @@
               <el-pagination
                 layout="prev, pager, next"
                 :total="appServiceEntries.totalCount"
-                :page-size="appServiceEntries.pageSize"
-                v-model:currentPage="appServiceEntries.pageIndex"
+                :page-size="queryServiceEntryCondition.pageSize"
+                v-model:currentPage="queryServiceEntryCondition.pageIndex"
                 :hide-on-single-page="true"
-                @current-change="getAppServiceEntries()"
-              >
+                @current-change="getServiceEntries()">
               </el-pagination>
             </el-card>
-            <el-card v-if="wsServices.length > 0">
-              <template #header>
-                <span>{{ selectedHostName }} WebSocket服务</span>
-              </template>
-              <el-table :data="wsServices">
-                <el-table-column
-                  label="服务"
-                  prop="appService"
-                ></el-table-column>
-                <el-table-column
-                  label="websocket会话地址"
-                  prop="wsPath"
-                ></el-table-column>
-              </el-table>
-            </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="WebSocket服务" name="thrid" v-if="hasWsService">
+             <el-table
+                :data="wsServices.items"
+                :span-method="wsObjectSpanMethod">
+                <el-table-column label="ws服务" prop="serviceName">
+                </el-table-column>   
+                <el-table-column label="会话地址" prop="path">
+                </el-table-column>                                    
+                <el-table-column label="实例地址" prop="address">
+                </el-table-column>
+                </el-table>
+              <el-pagination
+                layout="prev, pager, next"
+                :total="wsServices.totalCount"
+                :page-size="queryWsServiceCondition.pageSize"
+                v-model:currentPage="queryWsServiceCondition.pageIndex"
+                :hide-on-single-page="true"
+                @current-change="getWsServices()">
+              </el-pagination>
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -171,17 +189,24 @@
 <script lang="ts">
 import { ref, onMounted } from "vue";
 import { useHostStoreHook } from "/@/store/modules/host";
+import { useServiceEntryStoreHook } from "/@/store/modules/serviceentry";
 import { HttpMethod } from "/@/utils/enums/HttpMethod";
+import { ServiceProtocol } from "/@/utils/enums/ServiceProtocol"
 import { useRouter } from "vue-router";
+import { useServiceStoreHook } from '/@/store/modules/service';
 export default {
   name: "Host",
   setup() {
     const hostsStore = useHostStoreHook();
+    const serviceEntryStore = useServiceEntryStoreHook();
+    const serviceStore = useServiceStoreHook();
     let host = ref({});
     let activeName = ref("first");
     let hostInstances = ref({});
     let hostDetail = ref({});
     let selectedHostName = ref("");
+    let boxcardclass = ref("");
+    let hasWsService = ref(false);
     let queryInstanceCondition = ref({
       pageIndex: 1,
       pageSize: 10
@@ -190,25 +215,39 @@ export default {
       pageIndex: 1,
       pageSize: 5
     });
-    let appServiceEntries = ref({
-      data: [],
-      totalCount: 0,
+
+    let queryWsServiceCondition = ref({
       pageIndex: 1,
-      pageSize: 10
+      pageSize: 5
     });
 
-    let wsServices = ref([]);
-    let allServiceEntries = [];
+    let queryServiceEntryCondition = ref({
+      pageIndex: 1,
+      pageSize: 10
+    })
+    let appServiceEntries = ref({
+
+    });
+
+    let wsServices = ref({
+
+    });
+
+
     let spanArr = [];
+    let wsSpanArr = [];
+    let wsPathSpanArr = [];
 
     let router = useRouter();
 
     const loadHosts = () => {
       hostsStore.getHosts(queryHostCondition.value).then(data => {
         host.value = data;
-        selectedHostName.value = data['items'][0].host;
+        selectedHostName.value = data['items'][0].hostName;
+        boxcardclass.value = "box-card-shadow";
+        queryServiceEntryCondition.value['hostName'] = selectedHostName.value;
         getHostInstaces();
-        getHostDetail(selectedHostName.value);
+        getServiceEntries();
       });
     };
 
@@ -219,31 +258,65 @@ export default {
           hostInstances.value = data;
         });
     };
-    const getHostDetail = host => {
-      hostsStore.getHostDetail(host).then(data => {
-        hostDetail.value = data;
-        allServiceEntries = data["appServiceEntries"];
-        wsServices.value = data["wsServices"];
-        getAppServiceEntries();
-      });
-    };
    
     const handleSelectHost = hostInfo => {
       selectedHostName.value = hostInfo.hostName;
+      hasWsService.value = hostInfo.serviceProtocols.includes(ServiceProtocol.Ws);
+      queryServiceEntryCondition.value['hostName'] = selectedHostName.value;
+      activeName.value = 'first';
       getHostInstaces();
-      getHostDetail(selectedHostName.value);
+      getServiceEntries();
+      if(hasWsService.value) {
+        getWsServices();
+      }
     };
 
-    const getAppServiceEntries = () => {
-      appServiceEntries.value.totalCount = allServiceEntries.length;
-      appServiceEntries.value.data = allServiceEntries.slice(
-        (appServiceEntries.value.pageIndex - 1) *
-          appServiceEntries.value.pageSize,
-        appServiceEntries.value.pageIndex * appServiceEntries.value.pageSize
-      );
-      getSpanArr(appServiceEntries.value.data);
+    const getServiceEntries = () => {
+      serviceEntryStore
+      .getServiceEntries(queryServiceEntryCondition.value)
+      .then(data => {
+        appServiceEntries.value = data;
+        getSpanArr(appServiceEntries.value['items']);
+      });
+    
     };
 
+    const getWsServices = () => {
+      serviceStore.getWsServices(selectedHostName.value,queryWsServiceCondition.value)
+      .then(data => {
+        wsServices.value = data;
+        getWsSpanArr(wsServices.value['items']);
+      })
+    }
+
+    const getWsSpanArr = (data:any[]) => {
+      wsSpanArr = [];
+      wsPathSpanArr = [];
+      let pos = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (i === 0) {
+          wsSpanArr.push(1);
+          wsPathSpanArr.push(1);
+          pos = 0;
+        } else {
+          // 判断当前元素与上一个元素是否相同
+          if (data[i].serviceName === data[i - 1].serviceName) {
+            wsSpanArr[pos] += 1;
+            wsSpanArr.push(0);
+          } else {
+            wsSpanArr.push(1);
+            pos = i;
+          }
+          if (data[i].path === data[i - 1].path) {
+            wsPathSpanArr[pos] += 1;
+            wsPathSpanArr.push(0);
+          } else {
+            wsPathSpanArr.push(1);
+            pos = i;
+          }          
+        }
+      }
+    };
     const getSpanArr = (data: any[]) => {
       spanArr = [];
       let pos = 0;
@@ -253,7 +326,7 @@ export default {
           pos = 0;
         } else {
           // 判断当前元素与上一个元素是否相同
-          if (data[i].appService === data[i - 1].appService) {
+          if (data[i].serviceName === data[i - 1].serviceName) {
             spanArr[pos] += 1;
             spanArr.push(0);
           } else {
@@ -273,8 +346,23 @@ export default {
         };
       }
     };
+
+    const wsObjectSpanMethod = ({ row, column, rowIndex, columnIndex }) => {
+      if (columnIndex == 0) {
+        const _row = wsSpanArr[rowIndex];
+        const _col = _row > 0 ? 1 : 0;
+        return {
+          rowspan: _row,
+          colspan: _col
+        };
+      }
+    };    
     const displayHttpMethod = (httpMethod: Number) => {
       return HttpMethod[httpMethod];
+    };
+
+    const displayServiceProtocol = (serviceProtocol: Number) => {
+      return ServiceProtocol[serviceProtocol];
     };
     const handleSelectedInstance = row => {
       router.push({
@@ -289,9 +377,12 @@ export default {
     const handleSelectServiceEntry = row => {
       router.push({
         name: "serviceentry",
-        query: { serviceEntryId: row.serviceId }
+        query: { serviceEntryId: row.serviceEntryId }
       });
     };
+    const displayServiceKey = serviceKey => {
+      return `名称:${serviceKey.name},权重:${serviceKey.wight}`
+    }
 
     onMounted(() => {
       loadHosts();
@@ -308,14 +399,21 @@ export default {
       appServiceEntries,
       wsServices,
       selectedHostName,
+      queryServiceEntryCondition,
+      queryWsServiceCondition,
+      boxcardclass,
+      hasWsService,
       objectSpanMethod,
+      wsObjectSpanMethod,
       displayHttpMethod,
+      displayServiceProtocol,
       handleSelectHost,
-      getAppServiceEntries,
       handleSelectedInstance,
       handleSelectServiceEntry,
       handleClick,
-      
+      getServiceEntries,
+      getWsServices,
+      displayServiceKey
     };
   }
 };
@@ -349,4 +447,7 @@ export default {
   cursor: pointer;
 }
 
+.box-card-shadow {
+  box-shadow: 10px 10px 5px #888888;
+}
 </style>

@@ -2,19 +2,26 @@
   <div class="serviceentry-contanier">
     <el-button type="text" icon="el-icon-back" @click="goBack()">返回</el-button>
     <el-descriptions title="概要信息" class="serviceentry-descriptions" :column="3">
-      <el-descriptions-item label="所属应用:">{{serviceEntry.application}}</el-descriptions-item>
-      <el-descriptions-item label="服务:">{{serviceEntry.appService}}</el-descriptions-item>
-      <el-descriptions-item label="服务条目:">{{serviceEntry.serviceId}}</el-descriptions-item>
+      <el-descriptions-item label="微服务主机:">{{serviceEntry.hostName}}</el-descriptions-item>
+      <el-descriptions-item label="应用服务:">{{serviceEntry.serviceName}}</el-descriptions-item>
+      <el-descriptions-item label="服务条目:">{{serviceEntry.serviceEntryId}}</el-descriptions-item>
+      <el-descriptions-item label="服务协议:">{{displayServiceProtocol(serviceEntry.serviceProtocol)}}</el-descriptions-item>
       <el-descriptions-item label="状态:">
         <el-tag
           :type="serviceEntry.isEnable ? 'success' : 'danger'">
-          {{ serviceEntry.isEnable ? "有效" : "无效" }}
+          {{ serviceEntry.isEnable ? "可用" : "不可用" }}
         </el-tag>
       </el-descriptions-item>
-      <el-descriptions-item label="实例数:">{{serviceEntry.serviceRouteCount}}</el-descriptions-item>
+      <el-descriptions-item label="实例数:">{{serviceEntry.serverInstanceCount }}</el-descriptions-item>
       <el-descriptions-item label="方法:">{{serviceEntry.method}}</el-descriptions-item>
-      <el-descriptions-item label="webApi地址:">{{serviceEntry.webApi}}</el-descriptions-item>
-      <el-descriptions-item label="请求方法:">
+      <el-descriptions-item label="禁用外网:">
+        <el-tag
+          :type="serviceEntry.prohibitExtranet ? 'danger' : 'success'">
+          {{ serviceEntry.prohibitExtranet ? "是" : "否" }}
+        </el-tag>
+      </el-descriptions-item>      
+      <el-descriptions-item v-if="!serviceEntry.prohibitExtranet" label="webApi地址:">{{serviceEntry.webApi}}</el-descriptions-item>
+      <el-descriptions-item v-if="!serviceEntry.prohibitExtranet" label="请求方法:">
         <el-tag type="success" v-if="serviceEntry.httpMethod != null">
           {{displayHttpMethod(serviceEntry.httpMethod)}}
         </el-tag>
@@ -30,39 +37,59 @@
           :type="serviceEntry.isDistributeTransaction ? 'success' : 'danger'">
           {{ serviceEntry.isDistributeTransaction ? "是" : "否" }}
         </el-tag>
-      </el-descriptions-item>     
+      </el-descriptions-item> 
+      <el-descriptions-item label="跳过认证:">
+        <el-tag
+          type="info">
+          {{ serviceEntry.isAllowAnonymous ? "是" : "否" }}
+        </el-tag>
+      </el-descriptions-item>   
+   
+      <el-descriptions-item v-if="serviceEntry.supportCachingIntercept" label="缓存拦截:">
+        <sapn v-for="(cacheTemplate,index) in serviceEntry.cacheTemplates" :key="index">
+          <el-tag type="success">
+           缓存模板:  {{ cacheTemplate.keyTemplete  }}
+          </el-tag>
+          <el-tag type="success" style="margin-left:10px">
+           缓存方法: {{ displayCachingMethod(cacheTemplate.cachingMethod) }}
+          </el-tag>  
+        </sapn>
+      </el-descriptions-item>      
+      <el-descriptions-item v-if="serviceEntry.multipleServiceKey" label="serviceKeys">
+        <sapn v-for="(serviceKey,index) in serviceEntry.serviceKeys" :key="index">
+          <el-tag type="success" style="margin-left:10px">
+           名称:  {{ serviceKey.name  }}
+           权重: {{ serviceKey.weight }}
+          </el-tag>
+        </sapn>
+      </el-descriptions-item>                       
        <el-descriptions-item label="开发者:" v-if="serviceEntry.author">{{serviceEntry.author}}</el-descriptions-item>       
     </el-descriptions>
-    <el-descriptions title="服务治理配置" class="serviceentry-descriptions" :column="3">
+    <el-descriptions title="服务治理" class="serviceentry-descriptions" :column="3" v-if="governanceOptions != null">
       <el-descriptions-item label="负载均衡策略:">
         <el-tag type="success">{{displayShuntStrategy(governanceOptions.shuntStrategy)}}</el-tag>
       </el-descriptions-item>
-      <el-descriptions-item label="rpc调用执行超时时间:">{{ governanceOptions.executionTimeout == -1 ? "不超时": `${governanceOptions.executionTimeout}ms` }}</el-descriptions-item>
-      <el-descriptions-item label="缓存拦截:">
-        <el-tag
-          :type="governanceOptions.cacheEnabled ? 'success' : 'danger'">
-          {{ governanceOptions.cacheEnabled ? "支持" : "不支持" }}
-        </el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item label="最大并发量:">{{governanceOptions.maxConcurrent}}</el-descriptions-item>
-      <el-descriptions-item label="禁用外网:">
-        <el-tag
-          :type="serviceEntry.prohibitExtranet ? 'danger' : 'success'">
-          {{ serviceEntry.prohibitExtranet ? "是" : "否" }}
-        </el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item label="失败重试次数:">{{governanceOptions.failoverCount}}次</el-descriptions-item>
+       <el-descriptions-item label="执行超时:">{{governanceOptions.timeoutMillSeconds}}ms</el-descriptions-item>
+      <!-- <el-descriptions-item label="最大并发量:">{{governanceOptions.maxConcurrent}}</el-descriptions-item> -->
+      <el-descriptions-item label="失败重试次数:">{{governanceOptions.retryTimes}}次</el-descriptions-item>
+      <el-descriptions-item label="重试间隔:">{{governanceOptions.retryIntervalMillSeconds}}ms</el-descriptions-item>
       <el-descriptions-item label="熔断保护:">
-        <el-tag :type="governanceOptions.fuseProtection ? 'success' : 'danger'">{{governanceOptions.fuseProtection ? "支持": "不支持"}}</el-tag>
+        <el-tag :type="governanceOptions.enableCircuitBreaker ? 'success' : 'danger'">{{governanceOptions.enableCircuitBreaker ? "支持": "不支持"}}</el-tag>
       </el-descriptions-item>
-      <el-descriptions-item label="熔断休眠时长:">{{governanceOptions.fuseSleepDuration}}s</el-descriptions-item>
-      <el-descriptions-item label="熔断n次后不健康实例下线:">{{governanceOptions.fuseTimes}}次</el-descriptions-item>
-      <el-descriptions-item label="跳过认证:">
-        <el-tag
-          :type="governanceOptions.isAllowAnonymous ? 'success' : 'danger'">
-          {{ governanceOptions.isAllowAnonymous ? "是" : "否" }}
-        </el-tag>
-      </el-descriptions-item>
+      <el-descriptions-item label="熔断前允许的异常次数:">{{governanceOptions.exceptionsAllowedBeforeBreaking}}</el-descriptions-item>
+      <el-descriptions-item label="熔断休眠时长:">{{governanceOptions.breakerSeconds}}s</el-descriptions-item>
+      <el-descriptions-item label="移除实例前允许不健康次数:">{{governanceOptions.unHealthAddressTimesAllowedBeforeRemoving}}次</el-descriptions-item>
+      <el-descriptions-item label="不健康实例休眠时间:">{{governanceOptions.addressFuseSleepDurationSeconds}}s</el-descriptions-item>
+      <el-descriptions-item label="是否支持回退:">{{ (serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0) ? "支持": "不支持"}}</el-descriptions-item>
+      <el-descriptions-item v-if="(serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0)" label="回退方法信息">
+        <sapn v-for="(fallback,index) in serviceEntry.fallbacks" :key="index">
+          <el-tag type="success" style="margin-left:10px">
+           类型:  {{ fallback.typeName  }}
+           回退方法:  {{ fallback.methodName  }}
+           权重: {{ fallback.weight }}
+          </el-tag>
+        </sapn>
+      </el-descriptions-item>  
     </el-descriptions>
 
     <el-card>
@@ -71,7 +98,7 @@
       </template>
       <div>
         <el-table :data="serviceEntryInstances.items">
-          <el-table-column label="服务条目" prop="serviceId" width="420"></el-table-column>
+          <el-table-column label="服务条目" prop="serviceEntryId" width="440"></el-table-column>
           <el-table-column label="实例地址">
             <template #default="scope">
               <el-button
@@ -89,8 +116,8 @@
           </el-table-column>
           <el-table-column label="是否在线">
             <template #default="scope">
-             <el-tag :type="scope.row.isEnable ? 'success' : 'danger'">
-             {{ scope.row.isEnable ? "是" : "否" }}
+             <el-tag :type="scope.row.enabled ? 'success' : 'danger'">
+             {{ scope.row.enabled ? "是" : "否" }}
              </el-tag>
             </template>
           </el-table-column>
@@ -111,12 +138,13 @@
 
 <script lang="ts">
 import { ref, onMounted } from 'vue';
-import { useServiceStoreHook } from "/@/store/modules/service";
+import { useServiceEntryStoreHook } from "/@/store/modules/serviceentry";
 import { useRoute, useRouter } from "vue-router";
 import { storageLocal } from "/@/utils/storage"
 import { HttpMethod } from '/@/utils/enums/HttpMethod';
+import { CachingMethod } from '/@/utils/enums/CachingMethod';
 import { ShuntStrategy } from "/@/utils/enums/ShuntStrategy"
-
+import { ServiceProtocol } from "/@/utils/enums/ServiceProtocol"
 export default {
   setup(){
     let serviceEntry = ref({});
@@ -129,14 +157,14 @@ export default {
 
     const route = useRoute();
     const router = useRouter();
-    const serviceStore = useServiceStoreHook();
+    const serviceEntryStore = useServiceEntryStoreHook();
 
     const loadServiceEntryDetail = () => {
       const serviceEntryId = storageLocal.getItem("serviceEntryId");
       if(serviceEntryId) {
-        serviceStore.getServiceEntryDetail(serviceEntryId).then(data => {
+        serviceEntryStore.getServiceEntryDetail(serviceEntryId).then(data => {
           serviceEntry.value = data;
-          governanceOptions.value = data["governanceOptions"];
+          governanceOptions.value = data["governance"];
         });
       }
 
@@ -145,7 +173,7 @@ export default {
     const loadServiceEntryInstances = () =>{
       const serviceEntryId = storageLocal.getItem("serviceEntryId");
       if(serviceEntryId) {
-        serviceStore.getServiceEntryRoutes(serviceEntryId,serviceEntryInstancesConditions.value).then(data => {
+        serviceEntryStore.getServiceEntryInstances(serviceEntryId,serviceEntryInstancesConditions.value).then(data => {
           serviceEntryInstances.value = data;
         })
       }
@@ -156,6 +184,13 @@ export default {
       return HttpMethod[value];
       
     }
+    const displayServiceProtocol = (serviceProtocol: Number) => {
+      return ServiceProtocol[serviceProtocol];
+    };   
+    
+    const displayCachingMethod = (cachingMethod: Number) => {
+      return CachingMethod[cachingMethod];
+    };   
 
     const displayShuntStrategy = (value) => {
      return ShuntStrategy[value];
@@ -191,6 +226,8 @@ export default {
       serviceEntryInstances,
       displayHttpMethod,
       displayShuntStrategy,
+      displayServiceProtocol,
+      displayCachingMethod,
       loadServiceEntryInstances,
       goBack,
       handleSelectedInstance
