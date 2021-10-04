@@ -17,10 +17,8 @@ import {
   EnclosureHttpResoponse,
   EnclosureHttpError
 } from "./types.d";
-
-import { useRouter } from "vue-router";
 import { storageSession } from "/@/utils/storage";
-const router = useRouter();
+
 class EnclosureHttp {
   constructor() {
     this.httpInterceptorsRequest();
@@ -33,7 +31,6 @@ class EnclosureHttp {
       const { status } = data;
       if (status === 401 || status === 4011) {
         storageSession.removeItem('info');
-        router.push("/login");
       }
     },
     beforeRequestCallback: (request) => {

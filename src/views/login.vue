@@ -39,7 +39,7 @@ export default {
 
     const toPage = (info: Object): void => {
       storageSession.setItem("info", info);
-      initRouter(info?.username).then(()=>{});
+      initRouter().then(()=>{});
       router.push("/");
     };
 

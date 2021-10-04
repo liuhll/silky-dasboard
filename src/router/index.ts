@@ -15,6 +15,10 @@ import { usePermissionStoreHook } from "/@/store/modules/permission";
 import { getExternalRoutes } from "/@/api/routes";
 
 import Layout from "/@/layout/index.vue";
+
+import { convertToBoolean } from '/@/utils/convert'
+
+let useAuth = convertToBoolean(window.useAuth);
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/*/*/*.vue");
 
@@ -72,10 +76,8 @@ const router = createRouter({
   }
 });
 
-export const initRouter = (name, next?, to?) => {
-
+export const initRouter = (next?, to?) => {
   return new Promise(resolve => {
-
     getExternalRoutes().then(({ data }) => {
       if (!data || data.length === 0) {
         usePermissionStoreHook().changeSetting([]);
@@ -121,30 +123,42 @@ import NProgress from "../utils/progress";
 
 // const whiteList = ["/login", "/register"];
 
-router.beforeEach((to, _from, next) => {
-  const loginInfo = storageSession.getItem("info");
-  NProgress.start();
-  const { t } = i18n.global;
-  // @ts-ignore
-  to.meta.title ? (document.title = t(to.meta.title)) : ""; // 动态title
-  if ((window.useAuth === false || window.useAuth === 'false') || loginInfo) {
-    if (_from?.name) {
-      next();
-    } else {
-      if (usePermissionStoreHook().wholeRoutes.length === 0)
-        initRouter(loginInfo?.username, next, to).then((router: Router) => {
-          router.push(to.path);
-        });
-      next();
-    }
+const routeBefore = (to,_from,next) => {
+  if (_from?.name) {
+    next();
   } else {
-    if (to.path !== "/login") {
-      next({ path: "/login" });
-    } else {
+    if (usePermissionStoreHook().wholeRoutes.length === 0) {
+      initRouter(next, to).then((router: Router) => {
+        router.push(to.path);
+      });
       next();
     }
   }
+};
+
+router.beforeEach((to, _from, next) => {
+ 
+  NProgress.start();
+  const { t } = i18n.global;
+  // // @ts-ignore
+  to.meta.title ? (document.title = t(to.meta.title)) : ""; // 动态title
+  if (useAuth) {
+    const loginInfo = storageSession.getItem("info");
+    if(loginInfo) {
+      routeBefore(to,_from,next);
+    } else {
+      if (to.path !== '/login') {
+        next({ path: '/login' })
+      }else {
+        next();
+      }
+    }
+
+  }else {
+    routeBefore(to,_from,next);
+  }
 });
+
 
 router.afterEach(() => {
   NProgress.done();

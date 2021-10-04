@@ -129,7 +129,7 @@ export default defineComponent({
         username: "admin",
         accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
       });
-      initRouter("admin").then(() => {});
+      initRouter().then(() => {});
       router.push("/");
     };
 

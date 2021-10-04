@@ -127,6 +127,17 @@
                 </el-col>
                 <el-col :span="3">
                   <el-select
+                    v-model="queryServiceEntryCondition.isSystem"
+                    clearable
+                    placeholder="系统服务"
+                    @change="getServiceEntries"
+                  >
+                    <el-option label="是" :value="true"> </el-option>
+                    <el-option label="否" :value="false"> </el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="3">
+                  <el-select
                     v-model="queryServiceEntryCondition.isAllowAnonymous"
                     clearable
                     placeholder="跳过认证"

@@ -63,6 +63,7 @@ import favicon from "/favicon.ico";
 import { emitter } from "/@/utils/mitt";
 import { deviceDetection } from "/@/utils/deviceDetection";
 import { useI18n } from "vue-i18n";
+import { convertToBoolean } from '/@/utils/convert'
 
 export default defineComponent({
   name: "Navbar",
@@ -95,7 +96,7 @@ export default defineComponent({
     const route = useRoute();
 
     let usename = storageSession.getItem("info")?.username;
-    let useAuth = window.useAuth || window.useAuth === 'true';
+    let useAuth =  convertToBoolean(window.useAuth);
 
     const { locale, t } = useI18n();
 
