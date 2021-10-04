@@ -9,9 +9,12 @@
       <el-descriptions-item label="状态:">
         <el-tag
           :type="serviceEntry.isEnable ? 'success' : 'danger'">
-          {{ serviceEntry.isEnable ? "可用" : "不可用" }}
+          {{ serviceEntry.isEnable ? "正常" : "异常" }}
         </el-tag>
       </el-descriptions-item>
+      <el-descriptions-item label="负载均衡策略:">
+        <el-tag type="success">{{displayShuntStrategy(governanceOptions.shuntStrategy)}}</el-tag>
+      </el-descriptions-item>      
       <el-descriptions-item label="实例数:">{{serviceEntry.serverInstanceCount }}</el-descriptions-item>
       <el-descriptions-item label="方法:">{{serviceEntry.method}}</el-descriptions-item>
       <el-descriptions-item label="禁用外网:">
@@ -26,7 +29,7 @@
           {{displayHttpMethod(serviceEntry.httpMethod)}}
         </el-tag>
       </el-descriptions-item>
-      <el-descriptions-item label="多个服务实现:">
+      <el-descriptions-item label="多个实现:">
         <el-tag
           :type="serviceEntry.multipleServiceKey ? 'success' : 'danger'">
           {{ serviceEntry.multipleServiceKey ? "是" : "否" }}
@@ -65,10 +68,7 @@
       </el-descriptions-item>                       
        <el-descriptions-item label="开发者:" v-if="serviceEntry.author">{{serviceEntry.author}}</el-descriptions-item>       
     </el-descriptions>
-    <el-descriptions title="服务治理" class="serviceentry-descriptions" :column="3" v-if="governanceOptions != null">
-      <el-descriptions-item label="负载均衡策略:">
-        <el-tag type="success">{{displayShuntStrategy(governanceOptions.shuntStrategy)}}</el-tag>
-      </el-descriptions-item>
+    <el-descriptions title="容错配置" class="serviceentry-descriptions" :column="3" v-if="governanceOptions != null">
       <el-descriptions-item label="执行超时:">{{governanceOptions.timeoutMillSeconds}}ms</el-descriptions-item>
       <el-descriptions-item label="失败重试次数:">{{governanceOptions.retryTimes}}次</el-descriptions-item>
       <el-descriptions-item label="重试间隔:">{{governanceOptions.retryIntervalMillSeconds}}ms</el-descriptions-item>

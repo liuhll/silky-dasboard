@@ -493,6 +493,7 @@ export default {
       boxcardclass,
       hasWsService,
       appServices,
+      loadHosts,
       objectSpanMethod,
       wsObjectSpanMethod,
       displayHttpMethod,

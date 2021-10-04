@@ -46,11 +46,11 @@
         <el-select
           v-model="searchServiceEntriesCondition.isEnable"
           clearable
-          placeholder="是否可用"
+          placeholder="状态"
           @change="loadServiceEntries"
         >
-          <el-option label="是" :value="true"> </el-option>
-          <el-option label="否" :value="false"> </el-option>
+          <el-option label="正常" :value="true"> </el-option>
+          <el-option label="异常" :value="false"> </el-option>
         </el-select>
       </el-col>
       <el-col :span="3">
@@ -155,7 +155,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="多个服务实现" prop="multipleServiceKey">
+      <el-table-column label="多个实现" prop="multipleServiceKey">
         <template #default="scope">
           <el-tag :type="scope.row.multipleServiceKey ? 'success' : 'danger'">
             {{ scope.row.multipleServiceKey ? "是" : "否" }}
