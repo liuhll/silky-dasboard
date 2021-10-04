@@ -57,7 +57,7 @@
         <el-select
           v-model="searchServiceEntriesCondition.isAllowAnonymous"
           clearable
-          placeholder="是否需要认证"
+          placeholder="跳过认证"
           @change="loadServiceEntries"
         >
           <el-option label="是" :value="true"> </el-option>
@@ -148,7 +148,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="AllowAnonymous" width="100">
+      <el-table-column label="跳过认证" width="100">
         <template #default="scope">
          <el-tag :type="scope.row.isAllowAnonymous ? 'success' : 'danger'">
             {{ scope.row.isAllowAnonymous ? "是" : "否" }}

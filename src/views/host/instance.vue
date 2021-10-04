@@ -71,7 +71,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="总执行次数(次)"
+            label="执行次数(次)"
             prop="serverHandleInfo.totalHandleCount"
           ></el-table-column>
           <el-table-column
@@ -153,7 +153,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="总请求(次)"
+            label="请求次数(次)"
             prop="clientInvokeInfo.totalInvokeCount"
           ></el-table-column>
           <el-table-column

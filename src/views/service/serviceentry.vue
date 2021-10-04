@@ -40,7 +40,7 @@
       </el-descriptions-item> 
       <el-descriptions-item label="跳过认证:">
         <el-tag
-          type="info">
+          :type="serviceEntry.isAllowAnonymous ? 'success' : 'danger'">
           {{ serviceEntry.isAllowAnonymous ? "是" : "否" }}
         </el-tag>
       </el-descriptions-item>   
@@ -69,8 +69,7 @@
       <el-descriptions-item label="负载均衡策略:">
         <el-tag type="success">{{displayShuntStrategy(governanceOptions.shuntStrategy)}}</el-tag>
       </el-descriptions-item>
-       <el-descriptions-item label="执行超时:">{{governanceOptions.timeoutMillSeconds}}ms</el-descriptions-item>
-      <!-- <el-descriptions-item label="最大并发量:">{{governanceOptions.maxConcurrent}}</el-descriptions-item> -->
+      <el-descriptions-item label="执行超时:">{{governanceOptions.timeoutMillSeconds}}ms</el-descriptions-item>
       <el-descriptions-item label="失败重试次数:">{{governanceOptions.retryTimes}}次</el-descriptions-item>
       <el-descriptions-item label="重试间隔:">{{governanceOptions.retryIntervalMillSeconds}}ms</el-descriptions-item>
       <el-descriptions-item label="熔断保护:">
@@ -81,7 +80,7 @@
       <el-descriptions-item label="移除实例前允许不健康次数:">{{governanceOptions.unHealthAddressTimesAllowedBeforeRemoving}}次</el-descriptions-item>
       <el-descriptions-item label="不健康实例休眠时长:">{{governanceOptions.addressFuseSleepDurationSeconds}}s</el-descriptions-item>
       <el-descriptions-item label="是否支持回退:">{{ (serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0) ? "支持": "不支持"}}</el-descriptions-item>
-      <el-descriptions-item v-if="(serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0)" label="回退方法信息">
+      <el-descriptions-item v-if="(serviceEntry.fallbacks != null && serviceEntry.fallbacks.length >0)" label="回退信息">
         <sapn v-for="(fallback,index) in serviceEntry.fallbacks" :key="index">
           <el-tag type="success" style="margin-left:10px">
            类型:  {{ fallback.typeName  }}

@@ -76,7 +76,7 @@
                 >
               </template>
             </el-table-column>
-            <el-table-column label="AllowAnonymous" width="100">
+            <el-table-column label="跳过认证" width="100">
               <template #default="scope">
                 <el-tag
                   :type="scope.row.isAllowAnonymous ? 'success' : 'danger'"
