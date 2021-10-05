@@ -52,7 +52,9 @@
       <div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="微服务实例" name="first">
-            <el-table :data="hostInstances.items">
+            <el-table :data="hostInstances.items.filter((data) => 
+              data.serviceProtocol == instanceServiceProtocol
+            )">
               <el-table-column
                 label="应用名称"
                 prop="hostName"
@@ -71,13 +73,6 @@
                   >
                 </template>
               </el-table-column>
-              <el-table-column label="服务协议">
-                <template #default="scope">
-                  <el-tag type="success">
-                    {{ displayServiceProtocol(scope.row.serviceProtocol) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
               <el-table-column label="健康状态">
                 <template #default="scope">
                   <el-tag :type="scope.row.isHealth ? 'success' : 'danger'">
@@ -89,6 +84,24 @@
                 <template #default="scope">
                   <el-tag :type="scope.row.isEnable ? 'success' : 'danger'">
                     {{ scope.row.isEnable ? "是" : "否" }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="服务协议">
+                <template #header>
+                  <el-select
+                    v-model="instanceServiceProtocol"
+                    size="mini"
+                    placeholder="请选择服务协议"
+                  >
+                    <el-option label="Tcp" :value="0"></el-option>
+                    <el-option label="Http" :value="4"></el-option>
+                    <el-option label="Ws" :value="2"></el-option>
+                  </el-select>
+                </template>
+                <template #default="scope">
+                  <el-tag type="success">
+                    {{ displayServiceProtocol(scope.row.serviceProtocol) }}
                   </el-tag>
                 </template>
               </el-table-column>
@@ -273,7 +286,9 @@ export default {
     const serviceStore = useServiceStoreHook();
     let host = ref({});
     let activeName = ref("first");
-    let hostInstances = ref({});
+    let hostInstances = ref({
+      items: []
+    });
     let hostDetail = ref({});
     let selectedHostName = ref("");
     let boxcardclass = ref("");
@@ -301,6 +316,8 @@ export default {
 
     let wsServices = ref({});
 
+    let instanceServiceProtocol = ref(ServiceProtocol.Tcp);
+
     let spanArr = [];
     let wsSpanArr = [];
     let wsPathSpanArr = [];
@@ -320,10 +337,8 @@ export default {
     };
 
     const reSetServiceEntryCondition = () => {
-      queryServiceEntryCondition.value = {
-        pageIndex: 1,
-        pageSize: 10
-      };
+      queryServiceEntryCondition.value["pageIndex"] = 1;
+      queryServiceEntryCondition.value["pageSize"] = 10;
     };
 
     const getHostInstaces = () => {
@@ -349,6 +364,7 @@ export default {
       hasWsService.value = hostInfo.serviceProtocols.includes(
         ServiceProtocol.Ws
       );
+      instanceServiceProtocol.value = ServiceProtocol.Tcp;
       queryServiceEntryCondition.value["hostName"] = selectedHostName.value;
       activeName.value = "first";
       reSetServiceEntryCondition();
@@ -493,6 +509,7 @@ export default {
       boxcardclass,
       hasWsService,
       appServices,
+      instanceServiceProtocol,
       loadHosts,
       objectSpanMethod,
       wsObjectSpanMethod,
