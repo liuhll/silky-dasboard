@@ -9,9 +9,11 @@
       </el-descriptions-item>
       <el-descriptions-item label="应用启动时间">
         <el-tag>{{ displayDate(instanceInfo.startTime) }}</el-tag>
-      </el-descriptions-item>      
+      </el-descriptions-item>
       <el-descriptions-item label="是否健康">
-        <el-tag :type="instanceStatus.isHealth === 'true' ? 'success' : 'danger'">
+        <el-tag
+          :type="instanceStatus.isHealth === 'true' ? 'success' : 'danger'"
+        >
           {{ instanceStatus.isHealth === "true" ? "健康" : "不健康" }}
         </el-tag>
       </el-descriptions-item>
@@ -27,24 +29,37 @@
           }}</el-descriptions-item>
           <el-descriptions-item label="平均执行时长">
             {{ displayAet(instanceHandleInfo.aet) }} ms</el-descriptions-item>
+          <el-descriptions-item label="实时并发量">{{
+            instanceHandleInfo.concurrentCount
+          }}</el-descriptions-item>
+          <el-descriptions-item label="最大并发量">{{
+            instanceHandleInfo.maxConcurrentCount
+          }}</el-descriptions-item>
           <el-descriptions-item label="执行次数(汇总)">
-           {{ instanceHandleInfo.totalHandleCount }}次</el-descriptions-item>
+            {{ instanceHandleInfo.totalHandleCount }}次</el-descriptions-item
+          >
           <el-descriptions-item label="异常执行次数">
-            {{ instanceHandleInfo.faultHandleCount }}次</el-descriptions-item>
-         
+            {{ instanceHandleInfo.faultHandleCount }}次</el-descriptions-item
+          >
+
           <el-descriptions-item label="严重错误(非业务异常)">
-            {{ instanceHandleInfo.totalSeriousErrorCount }}次</el-descriptions-item>    
+            {{
+              instanceHandleInfo.totalSeriousErrorCount
+            }}次</el-descriptions-item
+          >
           <el-descriptions-item
             label="最后发生严重错误(非业务异常)时间"
-            v-if="instanceHandleInfo.finalSeriousErrorTime">
+            v-if="instanceHandleInfo.finalSeriousErrorTime"
+          >
             {{
               displayDate(instanceHandleInfo.finalSeriousErrorTime)
-            }}</el-descriptions-item>
-          
+            }}</el-descriptions-item
+          >
         </el-descriptions>
         <el-table
           :data="serviceHandles.items"
-          :span-method="objectSpanHandleMethod">
+          :span-method="objectSpanHandleMethod"
+        >
           <el-table-column
             label="服务条目"
             prop="serviceEntryId"
@@ -57,45 +72,46 @@
           </el-table-column>
           <el-table-column label="首次执行时间">
             <template #default="scope">
-              {{ displayDate(scope.row.serverHandleInfo.firstHandleTime) }}
+              {{ displayDate(scope.row.firstHandleTime) }}
             </template>
           </el-table-column>
           <el-table-column label="最后执行时间">
             <template #default="scope">
-              {{ displayDate(scope.row.serverHandleInfo.finalHandleTime) }}
+              {{ displayDate(scope.row.finalHandleTime) }}
             </template>
           </el-table-column>
           <el-table-column label="平均执行时长(ms)">
             <template #default="scope">
-              {{ displayAet(scope.row.serverHandleInfo.aet) }}
+              {{ displayAet(scope.row.aet) }}
             </template>
           </el-table-column>
           <el-table-column
             label="执行次数(次)"
-            prop="serverHandleInfo.totalHandleCount"
+            prop="totalHandleCount"
           ></el-table-column>
           <el-table-column
             label="异常执行次数(次)"
-            prop="serverHandleInfo.faultHandleCount"
+            prop="faultHandleCount"
           ></el-table-column>
           <el-table-column
             label="严重错误[非业务异常](次)"
-            prop="serverHandleInfo.totalSeriousErrorCount"
+            prop="seriousErrorCount"
           ></el-table-column>
           <el-table-column label="最后严重错误[非业务异常]发生时间">
             <template #default="scope">
-              {{ displayDate(scope.row.serverHandleInfo.finalSeriousErrorTime) }}
+              {{ displayDate(scope.row.finalSeriousErrorTime) }}
             </template>
           </el-table-column>
         </el-table>
         <el-pagination
-            layout="prev, pager, next"
-            :total="serviceHandles.totalCount"
-            :page-size="serviceHandlePageRequest.pageSize"
-            v-model:currentPage="serviceHandlePageRequest.pageIndex"
-            :hide-on-single-page="true"
-            @current-change="getInstanceServiceHandle()">
-        </el-pagination>        
+          layout="prev, pager, next"
+          :total="serviceHandles.totalCount"
+          :page-size="serviceHandlePageRequest.pageSize"
+          v-model:currentPage="serviceHandlePageRequest.pageIndex"
+          :hide-on-single-page="true"
+          @current-change="getInstanceServiceHandle()"
+        >
+        </el-pagination>
       </el-tab-pane>
       <el-tab-pane label="Rpc请求信息" name="second">
         <el-descriptions title="该实例Rpc请求概要信息">
@@ -107,6 +123,12 @@
           }}</el-descriptions-item>
           <el-descriptions-item label="rpc平均请求响应时长"
             >{{ displayAet(instanceInvokeInfo.aet) }} ms</el-descriptions-item>
+          <el-descriptions-item label="实时并发量">{{
+            instanceInvokeInfo.concurrentCount
+          }}</el-descriptions-item>
+          <el-descriptions-item label="最大并发量">{{
+            instanceInvokeInfo.maxConcurrentCount
+          }}</el-descriptions-item>
           <el-descriptions-item label="rpc请求次数(汇总)">{{
             instanceInvokeInfo.totalInvokeCount
           }}</el-descriptions-item>
@@ -115,67 +137,65 @@
           }}</el-descriptions-item>
           <el-descriptions-item
             label="最后请求异常时间"
-            v-if="instanceInvokeInfo.finalFaultInvokeTime">
+            v-if="instanceInvokeInfo.finalFaultInvokeTime"
+          >
             {{
               displayDate(instanceInvokeInfo.finalFaultInvokeTime)
-            }}</el-descriptions-item>
-          
+            }}</el-descriptions-item
+          >
         </el-descriptions>
         <el-table
           :data="serviceInvokes.items"
-          :span-method="objectSpanInvokeMethod" >
-         
-          <el-table-column
-            label="服务条目"
-            prop="serviceEntryId"
-            width="400" >
-           </el-table-column>
+          :span-method="objectSpanInvokeMethod"
+        >
+          <el-table-column label="服务条目" prop="serviceEntryId" width="400">
+          </el-table-column>
           <el-table-column label="服务提供者地址(当前状态)" width="220">
             <template #default="scope">
               <el-tag :type="scope.row.isEnable ? 'success' : 'danger'"
                 >{{ scope.row.address }}
-                {{ scope.row.isEnable ? "(在线)" : "(离线)" }}</el-tag>
+                {{ scope.row.isEnable ? "(在线)" : "(离线)" }}</el-tag
+              >
             </template>
-          </el-table-column>    
+          </el-table-column>
           <el-table-column label="首次调用时间">
             <template #default="scope">
-              {{ displayDate(scope.row.clientInvokeInfo.firstInvokeTime) }}
+              {{ displayDate(scope.row.firstInvokeTime) }}
             </template>
           </el-table-column>
           <el-table-column label="最后调用时间">
             <template #default="scope">
-              {{ displayDate(scope.row.clientInvokeInfo.finalInvokeTime) }}
+              {{ displayDate(scope.row.finalInvokeTime) }}
             </template>
           </el-table-column>
           <el-table-column label="平均响应(ms)">
             <template #default="scope">
-              {{ displayAet(scope.row.clientInvokeInfo.aet) }}
+              {{ displayAet(scope.row.aet) }}
             </template>
           </el-table-column>
           <el-table-column
             label="请求次数(次)"
-            prop="clientInvokeInfo.totalInvokeCount"
+            prop="totalInvokeCount"
           ></el-table-column>
           <el-table-column
             label="异常请求(次)"
-            prop="clientInvokeInfo.faultInvokeCount"
+            prop="faultInvokeCount"
           ></el-table-column>
           <el-table-column label="最后异常请求时间">
             <template #default="scope">
-              {{
-                displayDate(scope.row.clientInvokeInfo.finalFaultInvokeTime)
-              }}
+              {{ displayDate(scope.row.finalFaultInvokeTime) }}
             </template>
-          </el-table-column>                
+          </el-table-column>
         </el-table>
         <el-pagination
-            layout="prev, pager, next"
-            :total="serviceInvokes.totalCount"
-            :page-size="serviceInvokePageRequest.pageSize"
-            v-model:currentPage="serviceInvokePageRequest.pageIndex"
-            :hide-on-single-page="true"
-            @current-change="getInstanceServiceInvoke()">
-        </el-pagination>     
+          layout="prev, pager, next"
+          :total="serviceInvokes.totalCount"
+          :page-size="serviceInvokePageRequest.pageSize"
+          v-model:currentPage="serviceInvokePageRequest.pageIndex"
+          :hide-on-single-page="true"
+          @current-change="getInstanceServiceInvoke()"
+        >
+        </el-pagination>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -218,8 +238,8 @@ export default {
 
     const getInstanceDetail = () => {
       const address = storageLocal.getItem("instanceAddress");
-     
-      if (address && instanceStatus.value['isHealth'] === 'true') {
+
+      if (address && instanceStatus.value["isHealth"] === "true") {
         hostStore.getInstanceDetail(address).then(data => {
           instanceHandleInfo.value = data["handleInfo"];
           instanceInvokeInfo.value = data["invokeInfo"];
@@ -227,7 +247,7 @@ export default {
             hostName: data["hostName"],
             address: data["address"],
             startTime: data["startTime"]
-          }
+          };
         });
       }
     };
@@ -362,7 +382,7 @@ export default {
       objectSpanHandleMethod,
       objectSpanInvokeMethod,
       getInstanceServiceHandle,
-      getInstanceServiceInvoke,
+      getInstanceServiceInvoke
     };
   }
 };

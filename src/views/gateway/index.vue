@@ -13,13 +13,6 @@
       <el-descriptions-item label="支持的服务条目数">{{
         gatewayInfo.supportServiceEntryCount
       }}</el-descriptions-item>
-      <el-descriptions-item label="是否支持websocket代理">
-        <el-tag
-          :type="gatewayInfo.supportWebSocketProxy ? 'success' : 'danger'"
-        >
-          {{ gatewayInfo.supportWebSocketProxy ? "是" : "否" }}
-        </el-tag>
-      </el-descriptions-item>
     </el-descriptions>
     <el-card class="box-card">
       <el-tabs v-model="activeName">
