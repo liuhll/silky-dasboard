@@ -34,7 +34,7 @@
         <el-tab-pane label="支持的服务" name="second">
           <el-row class="search-place">
             <el-col :span="4">
-              <el-select v-model="gatewayServiceEntryCondition.serviceId" placeholder="请选择服务" @change="loadGatewayServiceEntries()">
+              <el-select v-model="gatewayServiceEntryCondition.serviceId" placeholder="请选择服务" @change="loadGatewayServiceEntries()" clearable>
                 <el-option v-for="(item,index) in gatewayServices" :key="index" :label="item.serviceName" :value="item.serviceId"></el-option>
               </el-select>
             </el-col>
