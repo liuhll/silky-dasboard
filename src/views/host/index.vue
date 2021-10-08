@@ -250,8 +250,10 @@
             >
               <el-table-column label="ws服务" prop="serviceName">
               </el-table-column>
-              <el-table-column label="会话地址" prop="path"> </el-table-column>
+              <el-table-column label="webapi" prop="path"> </el-table-column>
               <el-table-column label="实例地址" prop="address">
+              </el-table-column>
+               <el-table-column label="会话地址(代理)" prop="proxyAddress">
               </el-table-column>
             </el-table>
             <el-pagination

@@ -211,7 +211,7 @@ export default {
     const handleSelectedInstance = row => {
       router.push({
         name: "instance",
-        query: { address: row.address },
+        query: { address: row.address, serviceEntryId: row.serviceEntryId },
         params: {
           isHealth: row.isHealth,
           isEnable: row.isEnable

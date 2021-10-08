@@ -28,7 +28,8 @@
             displayDate(instanceHandleInfo.finalHandleTime)
           }}</el-descriptions-item>
           <el-descriptions-item label="平均执行时长">
-            {{ displayAet(instanceHandleInfo.aet) }} ms</el-descriptions-item>
+            {{ displayAet(instanceHandleInfo.aet) }} ms</el-descriptions-item
+          >
           <el-descriptions-item label="实时并发量">{{
             instanceHandleInfo.concurrentCount
           }}</el-descriptions-item>
@@ -56,6 +57,16 @@
             }}</el-descriptions-item
           >
         </el-descriptions>
+        <el-row>
+          <el-col :span="6">
+            <el-input
+              placeholder="关键字"
+              v-model="serviceHandlePageRequest.searchKey"
+              @input="getInstanceServiceHandle"
+              clearable
+            ></el-input>
+          </el-col>
+        </el-row>
         <el-table
           :data="serviceHandles.items"
           :span-method="objectSpanHandleMethod"
@@ -122,7 +133,8 @@
             displayDate(instanceInvokeInfo.finalInvokeTime)
           }}</el-descriptions-item>
           <el-descriptions-item label="rpc平均请求响应时长"
-            >{{ displayAet(instanceInvokeInfo.aet) }} ms</el-descriptions-item>
+            >{{ displayAet(instanceInvokeInfo.aet) }} ms</el-descriptions-item
+          >
           <el-descriptions-item label="实时并发量">{{
             instanceInvokeInfo.concurrentCount
           }}</el-descriptions-item>
@@ -144,6 +156,16 @@
             }}</el-descriptions-item
           >
         </el-descriptions>
+        <el-row>
+          <el-col :span="6">
+            <el-input
+              placeholder="关键字"
+              v-model="serviceInvokePageRequest.searchKey"
+              @input="getInstanceServiceInvoke"
+              clearable
+            ></el-input>
+          </el-col>
+        </el-row>        
         <el-table
           :data="serviceInvokes.items"
           :span-method="objectSpanInvokeMethod"
@@ -295,6 +317,11 @@ export default {
       if (address) {
         storageLocal.setItem("instanceAddress", address);
       }
+      const serviceEntryId = route.query["serviceEntryId"];
+      if (serviceEntryId) {
+        serviceHandlePageRequest.value.searchKey = serviceEntryId;
+      }
+
       if (Object.keys(route.params).length > 0) {
         storageLocal.setItem("instanceStatus", route.params);
       }
