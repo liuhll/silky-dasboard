@@ -72,6 +72,7 @@
       <el-descriptions-item label="执行超时:">{{governanceOptions.timeoutMillSeconds}}ms</el-descriptions-item>
       <el-descriptions-item label="失败重试次数:">{{governanceOptions.retryTimes}}次</el-descriptions-item>
       <el-descriptions-item label="重试间隔:">{{governanceOptions.retryIntervalMillSeconds}}ms</el-descriptions-item>
+      <el-descriptions-item label="允许的最大并发处理量:">{{governanceOptions.maxConcurrentHandlingCount}}</el-descriptions-item>
       <el-descriptions-item label="熔断保护:">
         <el-tag :type="governanceOptions.enableCircuitBreaker ? 'success' : 'danger'">{{governanceOptions.enableCircuitBreaker ? "支持": "不支持"}}</el-tag>
       </el-descriptions-item>

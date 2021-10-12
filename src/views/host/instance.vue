@@ -36,6 +36,9 @@
           <el-descriptions-item label="最大并发量">{{
             instanceHandleInfo.maxConcurrentCount
           }}</el-descriptions-item>
+          <el-descriptions-item label="允许的最大并发量">{{
+            instanceHandleInfo.allowMaxConcurrentCount
+          }}</el-descriptions-item>
           <el-descriptions-item label="执行次数(汇总)">
             {{ instanceHandleInfo.totalHandleCount }}次</el-descriptions-item
           >
