@@ -62,13 +62,13 @@
               <el-table-column label="地址">
                 <template #default="scope">
                   <el-button
-                    v-if="scope.row.serviceProtocol != 2"
+                    v-if="scope.row.serviceProtocol == 0"
                     type="text"
                     @click="handleSelectedInstance(scope.row)"
                   >
                     {{ scope.row.address }}</el-button
                   >
-                  <span v-if="scope.row.serviceProtocol == 2" type="text">
+                  <span v-if="scope.row.serviceProtocol != 0" type="text">
                     {{ scope.row.address }}</span
                   >
                 </template>
