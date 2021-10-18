@@ -1,6 +1,7 @@
 import { storageLocal } from "../../utils/storage";
 import { defineStore } from "pinia";
 import { store } from "/@/store";
+import { resolveData } from "./resolveHelper";
 
 interface AppState {
   sidebar: {

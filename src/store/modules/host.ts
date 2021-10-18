@@ -2,14 +2,15 @@ import { defineStore } from "pinia";
 import { store } from "/@/store";
 import { getHosts, getAllHosts, getHostDetail, getHostInstances, getInstanceDetail, getInstanceServiceHandle, getInstanceServiceInvoke } from "../../api/host";
 
+import { resolveData } from './resolveHelper'
+
 export const applicationStore = defineStore({
   id: "pure-application",
   actions: {
     getHosts(conditions) {
       return new Promise((resolve, reject) => {
         getHosts(conditions).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -18,18 +19,16 @@ export const applicationStore = defineStore({
     getAllHosts() {
       return new Promise((resolve, reject) => {
         getAllHosts().then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
       })
-    },    
+    },
     getHostInstances(appName, queryInstanceCondition) {
       return new Promise((resolve, reject) => {
         getHostInstances(appName, queryInstanceCondition).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -38,8 +37,7 @@ export const applicationStore = defineStore({
     getHostDetail(appName) {
       return new Promise((resolve, reject) => {
         getHostDetail(appName).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -48,18 +46,16 @@ export const applicationStore = defineStore({
     getInstanceDetail(address) {
       return new Promise((resolve, reject) => {
         getInstanceDetail(address).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
       })
     },
-    getInstanceServiceHandle(address,conditions) {
+    getInstanceServiceHandle(address, conditions) {
       return new Promise((resolve, reject) => {
-        getInstanceServiceHandle(address,conditions).then(response => {
-          const { data } = response
-          resolve(data)
+        getInstanceServiceHandle(address, conditions).then(response => {
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -68,8 +64,7 @@ export const applicationStore = defineStore({
     getInstanceServiceInvoke(address, conditions) {
       return new Promise((resolve, reject) => {
         getInstanceServiceInvoke(address, conditions).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })

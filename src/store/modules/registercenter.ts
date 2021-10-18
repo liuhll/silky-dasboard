@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
 import { getRegistryCenters } from "/@/api/registrycenter";
+import { resolveData } from "./resolveHelper"
 
 export const registryCenterStore = defineStore({
   id: "pure-registrycenter",
@@ -8,8 +9,7 @@ export const registryCenterStore = defineStore({
     getRegistryCenters() {
       return new Promise((resolve, reject) => {
         getRegistryCenters().then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })

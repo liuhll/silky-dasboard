@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getGeteway, getGatewayInstances, getGatewayServiceEntries, getGatewayServices} from "/@/api/gateway";
+import { getGeteway, getGatewayInstances, getGatewayServiceEntries, getGatewayServices } from "/@/api/gateway";
+import { resolveData } from "./resolveHelper";
 
 export const gatewayStore = defineStore({
   id: "pure-gateway",
@@ -8,8 +9,7 @@ export const gatewayStore = defineStore({
     getGeteway() {
       return new Promise((resolve, reject) => {
         getGeteway().then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -18,8 +18,7 @@ export const gatewayStore = defineStore({
     getGatewayInstances(condition) {
       return new Promise((resolve, reject) => {
         getGatewayInstances(condition).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -28,8 +27,7 @@ export const gatewayStore = defineStore({
     getGatewayServiceEntries(condition) {
       return new Promise((resolve, reject) => {
         getGatewayServiceEntries(condition).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -38,13 +36,12 @@ export const gatewayStore = defineStore({
     getGatewayServices() {
       return new Promise((resolve, reject) => {
         getGatewayServices().then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
       })
-    }    
+    }
   }
 });
 

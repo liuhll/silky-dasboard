@@ -16,6 +16,8 @@ import { useRouter } from "vue-router";
 import { storageSession } from "/@/utils/storage";
 import { warnMessage, successMessage } from "/@/utils/message";
 import { initRouter } from "/@/router";
+import { useUserHook } from "/@/store/modules/user";
+
 export default {
   name: "login",
   components: {
@@ -23,12 +25,7 @@ export default {
   },
   setup() {
     const router = useRouter();
-
-    // 刷新验证码
-    const refreshGetVerify = async () => {
-      let { svg } = await getVerify();
-      contextInfo.svg = svg;
-    };
+    const userStore = useUserHook();
 
     const contextInfo: ContextProps = reactive({
       userName: "",
@@ -39,28 +36,27 @@ export default {
 
     const toPage = (info: Object): void => {
       storageSession.setItem("info", info);
-      initRouter().then(()=>{});
+      initRouter().then(() => {});
       router.push("/");
     };
 
     // 登录
     const onLogin = async () => {
       let { userName, passWord } = contextInfo;
-      let { status, data, errorMessage } = await getLogin({
+
+      let { status, data, errorMessage } = await userStore.getLogin({
         userName: userName,
         password: passWord
       });
+      debugger;
+
       status === 200
-        ? successMessage('登陆成功') &&
+        ? successMessage("登陆成功") &&
           toPage({
             username: userName,
             accessToken: data
           })
         : warnMessage(errorMessage);
-    };
-
-    const refreshVerify = (): void => {
-      refreshGetVerify();
     };
 
     onBeforeMount(() => {
@@ -71,8 +67,7 @@ export default {
       contextInfo,
       onLogin,
       router,
-      toPage,
-      refreshVerify
+      toPage
     };
   }
 };

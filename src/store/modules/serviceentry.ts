@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
 import { getServiceEntries, getServiceEntryDetail, getServiceEntryInstances } from "/@/api/serviceentry";
+import { resolveData } from "./resolveHelper";
+
 
 export const serviceEntryStore = defineStore({
   id: "pure-serviceentry",
@@ -8,8 +10,7 @@ export const serviceEntryStore = defineStore({
     getServiceEntries(condition) {
       return new Promise((resolve, reject) => {
         getServiceEntries(condition).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -18,8 +19,7 @@ export const serviceEntryStore = defineStore({
     getServiceEntryDetail(serviceId) {
       return new Promise((resolve, reject) => {
         getServiceEntryDetail(serviceId).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
@@ -28,8 +28,7 @@ export const serviceEntryStore = defineStore({
     getServiceEntryInstances(serviceId, conditions) {
       return new Promise((resolve, reject) => {
         getServiceEntryInstances(serviceId, conditions).then(response => {
-          const { data } = response
-          resolve(data)
+          resolveData(resolve, response)
         }).catch(err => {
           reject(err)
         })
