@@ -16,7 +16,6 @@ import { useRouter } from "vue-router";
 import { storageSession } from "/@/utils/storage";
 import { warnMessage, successMessage } from "/@/utils/message";
 import { initRouter } from "/@/router";
-import { useUserHook } from "/@/store/modules/user";
 
 export default {
   name: "login",
@@ -25,8 +24,6 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const userStore = useUserHook();
-
     const contextInfo: ContextProps = reactive({
       userName: "",
       passWord: "",
@@ -44,11 +41,10 @@ export default {
     const onLogin = async () => {
       let { userName, passWord } = contextInfo;
 
-      let { status, data, errorMessage } = await userStore.getLogin({
+      let { status, data, errorMessage } = await getLogin({
         userName: userName,
         password: passWord
       });
-      debugger;
 
       status === 200
         ? successMessage("登陆成功") &&
@@ -59,9 +55,7 @@ export default {
         : warnMessage(errorMessage);
     };
 
-    onBeforeMount(() => {
-      // refreshGetVerify();
-    });
+    onBeforeMount(() => {});
 
     return {
       contextInfo,

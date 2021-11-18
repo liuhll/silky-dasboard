@@ -41,7 +41,7 @@
           <el-option label="是" :value="true"> </el-option>
           <el-option label="否" :value="false"> </el-option>
         </el-select>
-      </el-col>      
+      </el-col>
       <el-col :span="3">
         <el-select
           v-model="searchServiceEntriesCondition.isEnable"
@@ -74,7 +74,7 @@
           <el-option label="是" :value="true"> </el-option>
           <el-option label="否" :value="false"> </el-option>
         </el-select>
-      </el-col>      
+      </el-col>
       <el-col :span="3">
         <el-select
           v-model="searchServiceEntriesCondition.isDistributeTransaction"
@@ -85,7 +85,7 @@
           <el-option label="是" :value="true"> </el-option>
           <el-option label="否" :value="false"> </el-option>
         </el-select>
-      </el-col>      
+      </el-col>
       <el-col :span="3">
         <el-input
           placeholder="关键字"
@@ -150,7 +150,7 @@
       </el-table-column>
       <el-table-column label="跳过认证" width="100">
         <template #default="scope">
-         <el-tag :type="scope.row.isAllowAnonymous ? 'success' : 'danger'">
+          <el-tag :type="scope.row.isAllowAnonymous ? 'success' : 'danger'">
             {{ scope.row.isAllowAnonymous ? "是" : "否" }}
           </el-tag>
         </template>
@@ -186,7 +186,7 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useHostStoreHook } from "/@/store/modules/host";
 import { useServiceStoreHook } from "/@/store/modules/service";
 import { useServiceEntryStoreHook } from "/@/store/modules/serviceentry";
@@ -221,6 +221,7 @@ export default {
       });
     };
     const loadAppServices = () => {
+      debugger;
       serviceStore
         .getServices({
           hostName: searchServiceEntriesCondition.value.hostName
@@ -252,7 +253,6 @@ export default {
       searchServiceEntriesCondition.value.appService = null;
       appServices.value = [];
       loadServiceEntries();
-      
     };
 
     const handleSelectServiceEntry = row => {
