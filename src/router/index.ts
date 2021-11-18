@@ -103,9 +103,9 @@ export const initRouter = (next?, to?) => {
         path: "/:pathMatch(.*)",
         redirect: "/error/404"
       });
-  
+
     });
-  
+
   });
 };
 
@@ -123,7 +123,7 @@ import NProgress from "../utils/progress";
 
 // const whiteList = ["/login", "/register"];
 
-const routeBefore = (to,_from,next) => {
+const routeBefore = (to, _from, next) => {
   if (_from?.name) {
     next();
   } else {
@@ -132,30 +132,32 @@ const routeBefore = (to,_from,next) => {
         router.push(to.path);
       });
       next();
+    } else {
+      next();
     }
   }
 };
 
 router.beforeEach((to, _from, next) => {
- 
+
   NProgress.start();
   const { t } = i18n.global;
   // // @ts-ignore
   to.meta.title ? (document.title = t(to.meta.title)) : ""; // 动态title
   if (useAuth) {
     const loginInfo = storageSession.getItem("info");
-    if(loginInfo) {
-      routeBefore(to,_from,next);
+    if (loginInfo) {
+      routeBefore(to, _from, next);
     } else {
       if (to.path !== '/login') {
         next({ path: '/login' })
-      }else {
+      } else {
         next();
       }
     }
 
-  }else {
-    routeBefore(to,_from,next);
+  } else {
+    routeBefore(to, _from, next);
   }
 });
 
