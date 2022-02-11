@@ -2,8 +2,8 @@ import { convertToBoolean } from '/@/utils/convert';
 
 export function resolveData(resolve, response) {
   if (convertToBoolean(window.wrapperResponse)) {
-    const { data } = response;
-    resolve(data)
+    const { result } = response;
+    resolve(result)
   } else {
     resolve(response)
   }
@@ -14,7 +14,7 @@ export function resolveLoginData(resolve, response) {
     resolve(response)
   } else {
     resolve({
-      data: response,
+      result: response,
       status: 200
     })
   }
@@ -25,8 +25,7 @@ export function resolveLoginErrorData(resolve, response) {
     resolve(response)
   } else {
     let errorMessage = response.statusText
-    debugger
-    if (response.data !== '') {
+    if (response.result !== '') {
       errorMessage = response.data
     }
     resolve({

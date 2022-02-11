@@ -41,7 +41,7 @@ export default {
     const onLogin = async () => {
       let { userName, passWord } = contextInfo;
 
-      let { status, data, errorMessage } = await getLogin({
+      let { status, result, errorMessage } = await getLogin({
         userName: userName,
         password: passWord
       });
@@ -50,7 +50,7 @@ export default {
         ? successMessage("登陆成功") &&
           toPage({
             username: userName,
-            accessToken: data
+            accessToken: result
           })
         : warnMessage(errorMessage);
     };
