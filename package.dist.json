@@ -1,0 +1,23 @@
+{
+    "name": "silky-dashboard-ui-dist",
+    "version": "2.0.0",
+    "description": "this is silky for dashboard",
+    "main": "index.js",
+    "scripts": {
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+ssh://git@github.com/liuhll/silky-dasboard.git"
+    },
+    "keywords": [
+      "silky",
+      "dashboard"
+    ],
+    "author": "liuhll",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/liuhll/silky-dasboard/issues"
+    },
+    "homepage": "https://github.com/liuhll/silky-dasboard#readme"
+  }
+  

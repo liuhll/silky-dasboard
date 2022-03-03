@@ -1,6 +1,15 @@
 <template>
   <div class="info">
     <el-form :model="model" :rules="rules" ref="ruleForm" class="rule-form">
+
+     <el-form-item prop="tenantName" v-if="useTenant">
+        <el-input
+          clearable
+          v-model="model.tenantName"
+          placeholder="请输入租户标识"
+          prefix-icon="el-icon-user"
+        ></el-input>
+      </el-form-item>
       <el-form-item prop="userName">
         <el-input
           clearable
@@ -44,6 +53,7 @@ import {
 import { storageSession } from "/@/utils/storage";
 
 export interface ContextProps {
+  tenantName?: string | null;
   userName: string;
   passWord: string;
   verify: number | null;
@@ -55,6 +65,7 @@ export interface ContextProps {
 import { useRouter, useRoute } from "vue-router";
 
 import { initRouter } from "/@/router";
+import { convertToBoolean } from "/@/utils/convert";
 
 export default defineComponent({
   name: "Info",
@@ -74,6 +85,8 @@ export default defineComponent({
 
     const route = useRoute();
     const router = useRouter();
+
+    const useTenant = ref(convertToBoolean(window.useTenant));
 
     watch(
       route,
@@ -142,6 +155,7 @@ export default defineComponent({
       rules,
       tips,
       tipsFalse,
+      useTenant,
       resetForm,
       onBehavior,
       refreshVerify,

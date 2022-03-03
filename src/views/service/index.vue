@@ -221,7 +221,6 @@ export default {
       });
     };
     const loadAppServices = () => {
-      debugger;
       serviceStore
         .getServices({
           hostName: searchServiceEntriesCondition.value.hostName

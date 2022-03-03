@@ -34,7 +34,8 @@ class EnclosureHttp {
       }
     },
     beforeRequestCallback: (request) => {
-      let loginUserInfo = storageSession.getItem("info");
+      request.headers.SilkyDashboard = true;
+      const loginUserInfo = storageSession.getItem("info");
       if (loginUserInfo && loginUserInfo.accessToken) {
         request.headers.Authorization = loginUserInfo.accessToken;
       }
@@ -175,6 +176,7 @@ class EnclosureHttp {
     instance.interceptors.response.use(
       (response: EnclosureHttpResoponse) => {
         // 请求每次成功一次就删除当前canceltoken标记
+
         const cancelKey = EnclosureHttp.genUniqueKey(response.config);
         this.deleteCancelTokenByCancelKey(cancelKey);
         // 优先判断post/get等方法是否传入回掉，否则执行初始化设置等回掉

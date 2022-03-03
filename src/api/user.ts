@@ -6,6 +6,10 @@ export const getVerify = (): any => {
 };
 
 // 登录
-export const getLogin = (data: object): any => {
-  return http.request("post", window.authApi, data);
+export const getLogin = (data: any): any => {
+  const requestParams: any = {};
+  requestParams[window.tenantName] = data.tenantName;
+  requestParams[window.account] = data.userName;
+  requestParams[window.password] = data.password;
+  return http.request("post", window.authApi, requestParams);
 };
